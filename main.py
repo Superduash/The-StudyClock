@@ -1,29 +1,28 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton
 
-app = QApplication([])
-window = QMainWindow()
-window.setWindowTitle("The StudyClock")
-cw = QWidget()
-window.setCentralWidget(cw)
-layout = QVBoxLayout()
-layout.addWidget(QLabel("Welcome to The StudyClock!!"))
-layout.addWidget(QPushButton("Start Timer"))
-layout.addWidget(QPushButton("Settings"))
-cw.setLayout(layout)
-window.show()
+app = QApplication(sys.argv)
 
 class StudyClockApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.init_ui()
 
-    def init_ui(self):
-        # Your main window initialization code will go here
-        self.setWindowTitle("StudyClock")
         self.setGeometry(100, 100, 800, 600)
-        self.show()
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = StudyClockApp()
-    sys.exit(app.exec_())
+        self.setWindowTitle("Study Clock")
+        self.initUI()
+
+    def initUI(self):
+        label = QLabel("Hello, Study Clock!", self)
+        label.move(50, 50)
+
+        button = QPushButton("Click Me", self)
+        button.move(50, 100)
+        button.clicked.connect(self.on_button_click)
+
+    def on_button_click(self):
+        print("Button clicked!")
+
+main_window = StudyClockApp()
+main_window.show()
+
+app.exec_()
