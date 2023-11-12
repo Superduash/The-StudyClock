@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QDesktopWidget, QApplication, QMainWindow, QLabel, QPushButton
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -13,11 +14,11 @@ class MyWindow(QMainWindow):
         self.setWindowFlags(Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowState(Qt.WindowMaximized)
         self.setFixedSize(self.size())
+        icon_path = "resources/logo.jpg"
+        self.setWindowIcon(QIcon(icon_path))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyWindow()
     window.show()
     sys.exit(app.exec_())
-    icon_path = "path/to/your/icon.png"
-    self.setWindowIcon(QIcon(icon_path))
