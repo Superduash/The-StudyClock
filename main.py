@@ -2,7 +2,6 @@ import sys
 from PyQt5.QtWidgets import QDesktopWidget, QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import Qt
-
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -11,12 +10,13 @@ class MyWindow(QMainWindow):
         screen_rect = desktop.availableGeometry()
         initial_width = screen_rect.width() * 1
         initial_height = screen_rect.height() * 0.966
-
-        background_label = QLabel(self)
-        background_label.setScaledContents(True)
+        title_label = QLabel(self)
+        title_pixmap = QPixmap("resources/title.png")
+        title_label.setPixmap(title_pixmap.scaledToWidth(initial_width * 0.3))
+        title_label.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
         central_widget = QWidget(self)
         central_layout = QVBoxLayout(central_widget)
-        central_layout.addWidget(background_label)
+        central_layout.addWidget(title_label)
 
         self.setWindowTitle("The StudyClock")
         self.setGeometry(int((screen_rect.width() - initial_width) / 2), int((screen_rect.height() - initial_height) / 2), int(initial_width), int(initial_height))
