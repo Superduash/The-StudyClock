@@ -1,12 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDesktopWidget
-from PyQt5.QtGui import QIcon, QPainter, QColor, QFont, QPen
-from pystray import MenuItem as item, Icon as icon, Menu as menu
-import pystray
-from PyQt5.QtCore import Qt, QTimer, QSize
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDesktopWidget, QMenu, QSystemTrayIcon
+from PyQt5.QtGui import QIcon, QPainter, QColor, QFont, QPen, QCloseEvent
+from PyQt5.QtCore import Qt, QTimer
 from datetime import datetime, timedelta
 from plyer import notification
-from PIL import Image
 
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
@@ -55,34 +52,32 @@ class TimerApp(QMainWindow):
         self.timer_label = OutlinedLabel(self)
         self.timer_label.setAlignment(Qt.AlignCenter)
         self.timer_label.setText("00:00")
-        self.timer_label.setStyleSheet("font-family: 'Trebuchet MS'; color: white; font-size: 140px;")  # Increased font size by 40%
+        self.timer_label.setStyleSheet("font-family: 'Segoe UI'; color: #ffffff; font-size: 140px;")  # Enhanced font and color
 
         self.start_button = QPushButton("Start Timer", self)
         self.reset_button = QPushButton("Reset Timer", self)
         self.pause_button = QPushButton("Pause Timer", self)
         self.minimize_button = QPushButton("Minimize", self)
-        self.menu = menu(
-            item('Open', lambda icon, item: self.show()),
-            item('Exit', lambda icon, item: self.close_application())
-        )
-        self.tray_icon = icon("name", self.create_icon(), menu=self.menu)
-        button_size = QSize(300, 100)
-        font_size = 24
-        font = QFont("Trebuchet MS", int(font_size * 1.1), QFont.Bold)
+
+        button_width = 200  # Adjusted button width
+        button_height = 50  # Adjusted button height
+        font_size = 22  # Increased font size by 30%
+        font = QFont("Segoe UI", font_size, QFont.Bold)
 
         for button in [self.start_button, self.reset_button, self.pause_button, self.minimize_button]:
-            button.setFixedSize(button_size)
+            button.setFixedSize(button_width, button_height)
             button.setFont(font)
-            button.setStyleSheet(f"QPushButton {{ color: white; font-family: 'Trebuchet MS'; font-size: {int(font_size * 1.1)}px; background-color: transparent; border: 4px solid black; padding: 5px; }}")
+            button.setStyleSheet(
+                f"QPushButton {{ color: #ffffff; font-family: 'Segoe UI'; font-size: {font_size}px; background-color: #3498db; border: 2px solid #2980b9; padding: 5px; border-radius: 10px; }}"
+                f"QPushButton:hover {{ background-color: #2980b9; }}"
+            )
 
         layout = QVBoxLayout()
         layout.addWidget(self.timer_label)
 
         button_layout = QHBoxLayout()
-        button_layout.addWidget(self.start_button)
-        button_layout.addWidget(self.reset_button)
-        button_layout.addWidget(self.pause_button)
-        button_layout.addWidget(self.minimize_button)
+        for button in [self.start_button, self.reset_button, self.pause_button, self.minimize_button]:
+            button_layout.addWidget(button, alignment=Qt.AlignCenter)
         layout.addLayout(button_layout)
 
         central_widget = QWidget(self)
@@ -119,6 +114,11 @@ class TimerApp(QMainWindow):
             app_icon="resources/20-20-20.jpg",
             timeout=10
         )
+
+    def minimize_to_system_tray(self):
+        self.hide()
+        self.create_system_tray_icon()
+
     def update_timer(self):
         if self.start_time:
             elapsed_time = datetime.now() - self.start_time
@@ -132,25 +132,23 @@ class TimerApp(QMainWindow):
                 self.timer_label.setText(formatted_time)
 
     def create_system_tray_icon(self):
-        self.menu = menu(
-            item('Open', lambda icon, item: self.show()),
-            item('Exit', lambda icon, item: self.close_application())
-        )
-        self.tray_icon = icon("name", self.create_icon(), menu=self.menu)
-        self.tray_icon.run()
+        menu = QMenu(self)
+        open_action = menu.addAction("Open")
+        open_action.triggered.connect(self.show)
+        exit_action = menu.addAction("Exit")
+        exit_action.triggered.connect(self.close_application)
 
-    def create_icon(self):
-        return Image.open("resources/logo.jpg")
-
-    def minimize_to_system_tray(self):
-        self.hide()
-        self.create_system_tray_icon()
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("resources/logo.jpg"))
+        self.tray_icon.setContextMenu(menu)
+        self.tray_icon.show()
 
     def close_application(self):
-        self.tray_icon.stop()
+        self.tray_icon.hide()
         sys.exit()
-    def closeEvent(self, event):
-        if self.isVisible():
+
+    def closeEvent(self, event: QCloseEvent):
+        if self.tray_icon is None:
             self.minimize_to_system_tray()
             event.ignore()
         else:
