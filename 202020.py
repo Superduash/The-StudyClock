@@ -1,9 +1,10 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDesktopWidget, QMenu, QSystemTrayIcon
 from PyQt5.QtGui import QIcon, QPainter, QColor, QFont, QPen, QCloseEvent
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QUrl
 from datetime import datetime, timedelta
 from plyer import notification
+from PyQt5.QtMultimedia import QSoundEffect
 
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
@@ -51,7 +52,7 @@ class TimerApp(QMainWindow):
 
         self.timer_label = OutlinedLabel(self)
         self.timer_label.setAlignment(Qt.AlignCenter)
-        self.timer_label.setText("00:00")
+        self.timer_label.setText("20:00")
         self.timer_label.setStyleSheet("font-family: 'Segoe UI'; color: #ffffff; font-size: 140px;")  # Enhanced font and color
 
         self.start_button = QPushButton("Start Timer", self)
@@ -59,10 +60,10 @@ class TimerApp(QMainWindow):
         self.pause_button = QPushButton("Pause Timer", self)
         self.minimize_button = QPushButton("Minimize", self)
 
-        button_width = 200  # Adjusted button width
-        button_height = 50  # Adjusted button height
-        font_size = 22  # Increased font size by 30%
-        font = QFont("Segoe UI", font_size, QFont.Bold)
+        button_width = 280
+        button_height = 100
+        font_size = 30
+        font = QFont("Trebuchet MS", font_size, QFont.Bold)
 
         for button in [self.start_button, self.reset_button, self.pause_button, self.minimize_button]:
             button.setFixedSize(button_width, button_height)
@@ -71,6 +72,12 @@ class TimerApp(QMainWindow):
                 f"QPushButton {{ color: #ffffff; font-family: 'Segoe UI'; font-size: {font_size}px; background-color: #3498db; border: 2px solid #2980b9; padding: 5px; border-radius: 10px; }}"
                 f"QPushButton:hover {{ background-color: #2980b9; }}"
             )
+
+            # Add click effect animation
+            self.add_click_effect_animation(button)
+
+            # Add click sound effect
+            button.clicked.connect(self.play_click_sound)
 
         layout = QVBoxLayout()
         layout.addWidget(self.timer_label)
@@ -92,14 +99,35 @@ class TimerApp(QMainWindow):
         self.pause_button.clicked.connect(self.pause_timer)
         self.minimize_button.clicked.connect(self.minimize_to_system_tray)
 
+        # Sound effect setup
+        self.click_sound = QSoundEffect()
+        self.click_sound.setSource(QUrl.fromLocalFile("path/to/click_sound.wav"))
+
+    def add_click_effect_animation(self, button):
+        effect = QPropertyAnimation(button, b"geometry")
+        effect.setDuration(50)
+        effect.setStartValue(button.geometry())
+        effect.setEndValue(button.geometry().adjusted(5, 5, -5, -5))
+        button.clicked.connect(effect.start)
+
+    def play_click_sound(self):
+        self.click_sound.play()
+
     def start_timer(self):
         if not self.timer.isActive():
-            self.start_time = datetime.now()
+            if hasattr(self, 'start_time') and self.start_time:
+                elapsed_time = datetime.now() - self.start_time
+                remaining_time = timedelta(minutes=1) - elapsed_time
+                self.start_time = datetime.now() - (timedelta(minutes=1) - remaining_time)
+            else:
+                self.start_time = datetime.now()
+
+            self.timer.timeout.emit()
             self.timer.start(1000)
 
     def reset_timer(self):
         self.timer.stop()
-        self.timer_label.setText("00:00")
+        self.timer_label.setText("20:00")
 
     def pause_timer(self):
         if self.timer.isActive():
@@ -122,7 +150,7 @@ class TimerApp(QMainWindow):
     def update_timer(self):
         if self.start_time:
             elapsed_time = datetime.now() - self.start_time
-            remaining_time = timedelta(minutes=20) - elapsed_time
+            remaining_time = timedelta(minutes=1) - elapsed_time
 
             if remaining_time.total_seconds() <= 0:
                 self.reset_timer()
