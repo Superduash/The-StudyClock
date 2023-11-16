@@ -1,10 +1,11 @@
-import sys
+import sys, time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from datetime import datetime, timedelta
+from plyer import notification
 from PyQt5.QtMultimedia import QSoundEffect
-from win10toast import ToastNotifier  # Assuming win10toast works for Win11 as well
+
 
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
@@ -96,18 +97,28 @@ class TimerApp(QMainWindow):
         self.minimize_button.clicked.connect(self.minimize_to_system_tray)
         self.click_sound = QSoundEffect()
         self.click_sound.setSource(QUrl.fromLocalFile("resources/click1.wav"))
-
+        self.notify_sound = QSoundEffect()
+        self.notify_sound.setSource(QUrl.fromLocalFile("resources/notify.wav"))
         self.paused = False
-        self.remaining_time = timedelta(minutes=1)  # Set the initial timer duration
+        self.remaining_time = timedelta(minutes=1)
+        self.delay_timer = QTimer(self)
+        self.delay_timer.timeout.connect(self.restart_timer)
+        self.notification_shown = False
+    def play_sound(self, sound_effect):
+        if sound_effect.isLoaded():
+            sound_effect.play()
+        else:
+            print("Error: Sound file not loaded.")
+
 
     def play_click_sound(self):
-        self.click_sound.play()
+        self.play_sound(self.click_sound)
 
     def start_timer(self):
         if not self.timer.isActive() and not self.paused:
             self.start_time = datetime.now()
-            self.timer.start(1000)  # Set the timer interval to 1000ms (1 second)
-            self.start_button.setEnabled(False)  # Disable the start button once the timer has started
+            self.timer.start(20)
+            self.start_button.setEnabled(False)
 
     def reset_timer(self):
         self.timer.stop()
@@ -124,11 +135,11 @@ class TimerApp(QMainWindow):
         else:
             if self.paused:
                 self.start_time = datetime.now()
-                self.timer.start(1000)
+                self.timer.start(20)
                 self.paused = False
             else:
                 self.start_time = datetime.now()
-                self.timer.start(1000)
+                self.timer.start(20)
                 self.paused = False
                 self.start_button.setEnabled(False)
 
@@ -143,23 +154,31 @@ class TimerApp(QMainWindow):
 
             if remaining_time.total_seconds() <= 0:
                 self.show_notification()
-                self.restart_timer()
             else:
                 formatted_time = str(remaining_time).split(".")[0]
+                if formatted_time.startswith("-"):
+                    formatted_time = "00:00"
+                    self.timer.stop()
+                    self.start_button.setEnabled(True)
                 self.timer_label.setText(formatted_time)
 
     def restart_timer(self):
         self.timer.stop()
         self.remaining_time = timedelta(minutes=1)
         self.timer_label.setText("01:00")
-        self.timer.start(1000)
-        self.start_time = datetime.now()
-        self.start_button.setEnabled(False)
+        self.start_timer()
 
     def show_notification(self):
-        toaster = ToastNotifier()
-        toaster.show_toast("20-20-20 Rule Reminder", "Look Away From The Screen For 1 Minute", duration=10)
-        self.play_click_sound()
+        if not self.notification_shown:
+            self.play_sound(self.notify_sound)
+            notification.notify(
+                title="20-20-20 Rule Reminder",
+                message="Look Away From The Screen For 20 Seconds",
+                timeout=5
+            )
+            self.delay_timer.start(25 * 1000)
+            self.notification_shown = True
+
 
     def create_system_tray_icon(self):
         menu = QMenu(self)
@@ -178,8 +197,7 @@ class TimerApp(QMainWindow):
         sys.exit()
 
     def closeEvent(self, event: QCloseEvent):
-        self.minimize_to_system_tray()
-        event.ignore()
+        event.accept()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
