@@ -154,7 +154,7 @@ class TimerApp(QMainWindow):
                 self.reset_timer()
                 self.show_notification()
             else:
-                formatted_time = str(remaining_time - timedelta(days=remaining_time.days)).split(".")[0]
+                formatted_time = str(remaining_time).split(".")[0]
                 self.timer_label.setText(formatted_time)
 
     def create_system_tray_icon(self):
