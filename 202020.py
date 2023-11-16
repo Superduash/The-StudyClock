@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from datetime import datetime, timedelta
 from plyer import notification
 from PyQt5.QtMultimedia import QSoundEffect
+
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
         super(OutlinedLabel, self).__init__(parent)
@@ -131,16 +132,6 @@ class TimerApp(QMainWindow):
                 self.paused = False
                 self.start_button.setEnabled(False)
 
-    def show_notification(self):
-        notification_title = "20-20-20 Rule Reminder"
-        notification_message = "Look Away From The Screen For 20"
-        notification.notify(
-            title=notification_title,
-            message=notification_message,
-            app_icon="resources/20-20-20.jpg",
-            timeout=10
-        )
-
     def minimize_to_system_tray(self):
         self.hide()
         self.create_system_tray_icon()
@@ -151,11 +142,29 @@ class TimerApp(QMainWindow):
             remaining_time = self.remaining_time - elapsed_time
 
             if remaining_time.total_seconds() <= 0:
-                self.reset_timer()
                 self.show_notification()
+                self.restart_timer()
             else:
                 formatted_time = str(remaining_time).split(".")[0]
                 self.timer_label.setText(formatted_time)
+
+    def restart_timer(self):
+        self.timer.stop()
+        self.remaining_time = timedelta(minutes=20)
+        self.timer_label.setText("20:00")
+        self.timer.start(10)
+        self.start_time = datetime.now()
+        self.start_button.setEnabled(False)
+
+    def show_notification(self):
+        notification_title = "20-20-20 Rule Reminder"
+        notification_message = "Look Away From The Screen For 20"
+        notification.notify(
+            title=notification_title,
+            message=notification_message,
+            app_icon="resources/20-20-20.jpg",
+            timeout=10
+        )
 
     def create_system_tray_icon(self):
         menu = QMenu(self)
