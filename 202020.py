@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDesktopWidget, QMenu, QSystemTrayIcon
 from PyQt5.QtGui import QIcon, QPainter, QColor, QFont, QPen, QCloseEvent
-from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QUrl
+from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QUrl, QSequentialAnimationGroup, QPauseAnimation
 from datetime import datetime, timedelta
 from plyer import notification
 from PyQt5.QtMultimedia import QSoundEffect
@@ -53,19 +53,19 @@ class TimerApp(QMainWindow):
         self.timer_label = OutlinedLabel(self)
         self.timer_label.setAlignment(Qt.AlignCenter)
         self.timer_label.setText("20:00")
-        self.timer_label.setStyleSheet("font-family: 'Segoe UI'; color: #ffffff; font-size: 140px;")  # Enhanced font and color
+        self.timer_label.setStyleSheet("font-family: 'Segoe UI'; color: #ffffff; font-size: 140px;")
 
         self.start_button = QPushButton("Start Timer", self)
         self.reset_button = QPushButton("Reset Timer", self)
-        self.pause_button = QPushButton("Pause Timer", self)
+        self.pause_resume_button = QPushButton("Pause/Resume Timer", self)
         self.minimize_button = QPushButton("Minimize", self)
 
-        button_width = 280
-        button_height = 100
+        button_width = 380
+        button_height = 120
         font_size = 30
         font = QFont("Trebuchet MS", font_size, QFont.Bold)
 
-        for button in [self.start_button, self.reset_button, self.pause_button, self.minimize_button]:
+        for button in [self.start_button, self.reset_button, self.pause_resume_button, self.minimize_button]:
             button.setFixedSize(button_width, button_height)
             button.setFont(font)
             button.setStyleSheet(
@@ -73,17 +73,14 @@ class TimerApp(QMainWindow):
                 f"QPushButton:hover {{ background-color: #2980b9; }}"
             )
 
-            # Add click effect animation
             self.add_click_effect_animation(button)
-
-            # Add click sound effect
             button.clicked.connect(self.play_click_sound)
 
         layout = QVBoxLayout()
         layout.addWidget(self.timer_label)
 
         button_layout = QHBoxLayout()
-        for button in [self.start_button, self.reset_button, self.pause_button, self.minimize_button]:
+        for button in [self.start_button, self.reset_button, self.pause_resume_button, self.minimize_button]:
             button_layout.addWidget(button, alignment=Qt.AlignCenter)
         layout.addLayout(button_layout)
 
@@ -96,42 +93,73 @@ class TimerApp(QMainWindow):
         self.timer.timeout.connect(self.update_timer)
         self.start_button.clicked.connect(self.start_timer)
         self.reset_button.clicked.connect(self.reset_timer)
-        self.pause_button.clicked.connect(self.pause_timer)
+        self.pause_resume_button.clicked.connect(self.pause_resume_timer)
         self.minimize_button.clicked.connect(self.minimize_to_system_tray)
-
-        # Sound effect setup
         self.click_sound = QSoundEffect()
-        self.click_sound.setSource(QUrl.fromLocalFile("path/to/click_sound.wav"))
+        self.click_sound.setSource(QUrl.fromLocalFile("resources/click1.wav"))
+
+        self.paused = False
+        self.remaining_time = timedelta(minutes=20)  # Set the initial timer duration
 
     def add_click_effect_animation(self, button):
-        effect = QPropertyAnimation(button, b"geometry")
-        effect.setDuration(50)
-        effect.setStartValue(button.geometry())
-        effect.setEndValue(button.geometry().adjusted(5, 5, -5, -5))
-        button.clicked.connect(effect.start)
+        effect_group = QSequentialAnimationGroup()
+
+        move_effect = QPropertyAnimation(button, b"geometry")
+        move_effect.setDuration(25)
+        move_effect.setStartValue(button.geometry())
+        move_effect.setEndValue(button.geometry().adjusted(5, 5, -5, -5))
+        effect_group.addAnimation(move_effect)
+
+        pause_effect = QPauseAnimation(25)
+        effect_group.addAnimation(pause_effect)
+
+        restore_effect = QPropertyAnimation(button, b"geometry")
+        restore_effect.setDuration(25)
+        restore_effect.setStartValue(button.geometry().adjusted(5, 5, -5, -5))
+        restore_effect.setEndValue(button.geometry())
+        effect_group.addAnimation(restore_effect)
+
+        effect_group.finished.connect(self.play_click_sound)
+        button.clicked.connect(effect_group.start)
 
     def play_click_sound(self):
         self.click_sound.play()
 
     def start_timer(self):
-        if not self.timer.isActive():
+        if not self.timer.isActive() and not self.paused:
             if hasattr(self, 'start_time') and self.start_time:
                 elapsed_time = datetime.now() - self.start_time
-                remaining_time = timedelta(minutes=1) - elapsed_time
-                self.start_time = datetime.now() - (timedelta(minutes=1) - remaining_time)
+                self.remaining_time = timedelta(minutes=20) - elapsed_time
+                self.start_time = datetime.now() - (timedelta(minutes=20) - self.remaining_time)
             else:
                 self.start_time = datetime.now()
 
-            self.timer.timeout.emit()
-            self.timer.start(1000)
+            if self.remaining_time == timedelta(minutes=20):
+                self.timer.timeout.emit()
+                self.timer.start(100)
+
+        # Enable the start button only when the timer is reset and is at 20:00
+        self.start_button.setEnabled(not self.timer.isActive() and not self.paused and self.remaining_time == timedelta(minutes=20))
 
     def reset_timer(self):
         self.timer.stop()
+        self.remaining_time = timedelta(minutes=20)
         self.timer_label.setText("20:00")
 
-    def pause_timer(self):
+    def pause_resume_timer(self):
         if self.timer.isActive():
             self.timer.stop()
+            self.paused = True
+            self.remaining_time = self.remaining_time - (datetime.now() - self.start_time)
+        else:
+            if self.paused:
+                self.start_time = datetime.now()
+                self.timer.start(100)
+                self.paused = False
+            else:
+                self.start_time = datetime.now()
+                self.timer.start(100)
+                self.paused = False
 
     def show_notification(self):
         notification_title = "20-20-20 Rule Reminder"
@@ -148,9 +176,9 @@ class TimerApp(QMainWindow):
         self.create_system_tray_icon()
 
     def update_timer(self):
-        if self.start_time:
+        if self.start_time and not self.paused:
             elapsed_time = datetime.now() - self.start_time
-            remaining_time = timedelta(minutes=1) - elapsed_time
+            remaining_time = self.remaining_time - elapsed_time
 
             if remaining_time.total_seconds() <= 0:
                 self.reset_timer()
