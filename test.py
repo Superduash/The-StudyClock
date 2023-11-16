@@ -176,9 +176,10 @@ class TimerApp(QMainWindow):
                 message="Look Away From The Screen For 20 Seconds",
                 timeout=5
             )
-            self.delay_timer.start(25 * 1000)
             self.notification_shown = True
 
+            if not self.timer.isActive():
+                self.delay_timer.start(25 * 1000)
 
     def create_system_tray_icon(self):
         menu = QMenu(self)
