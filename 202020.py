@@ -1,6 +1,4 @@
-#PyQt5.QtWidgets - QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDesktopWidget, QMenu, QSystemTrayIcon
-#PyQt5.QtGui - QIcon, QPainter, QColor, QFont, QPen, QCloseEvent
-#PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QUrl, QSequentialAnimationGroup, QPauseAnimation
+
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -8,7 +6,6 @@ from PyQt5.QtCore import *
 from datetime import datetime, timedelta
 from plyer import notification
 from PyQt5.QtMultimedia import QSoundEffect
-
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
         super(OutlinedLabel, self).__init__(parent)
@@ -102,28 +99,6 @@ class TimerApp(QMainWindow):
 
         self.paused = False
         self.remaining_time = timedelta(minutes=20)  # Set the initial timer duration
-
-    def add_glowing_click_effect(self, button):
-        effect_group = QSequentialAnimationGroup()
-
-        # Geometry Animation
-        move_effect = QPropertyAnimation(button, b"geometry")
-        move_effect.setDuration(150)
-        move_effect.setStartValue(button.geometry())
-        move_effect.setEndValue(button.geometry().adjusted(5, 5, -5, -5))
-        effect_group.addAnimation(move_effect)
-
-        pause_effect = QPauseAnimation(150)
-        effect_group.addAnimation(pause_effect)
-
-        restore_effect = QPropertyAnimation(button, b"geometry")
-        restore_effect.setDuration(150)
-        restore_effect.setStartValue(button.geometry().adjusted(5, 5, -5, -5))
-        restore_effect.setEndValue(button.geometry())
-        effect_group.addAnimation(restore_effect)
-
-        effect_group.finished.connect(self.play_click_sound)
-        button.clicked.connect(effect_group.start)
 
     def play_click_sound(self):
         self.click_sound.play()
