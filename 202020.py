@@ -1,4 +1,3 @@
-
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -106,7 +105,7 @@ class TimerApp(QMainWindow):
     def start_timer(self):
         if not self.timer.isActive() and not self.paused:
             self.start_time = datetime.now()
-            self.timer.start(1000)
+            self.timer.start(10)
             self.start_button.setEnabled(False)  # Disable the start button once the timer has started
 
     def reset_timer(self):
@@ -124,11 +123,11 @@ class TimerApp(QMainWindow):
         else:
             if self.paused:
                 self.start_time = datetime.now()
-                self.timer.start(1000)
+                self.timer.start(10)
                 self.paused = False
             else:
                 self.start_time = datetime.now()
-                self.timer.start(1000)
+                self.timer.start(10)
                 self.paused = False
                 self.start_button.setEnabled(False)
 
