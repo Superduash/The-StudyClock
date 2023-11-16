@@ -52,7 +52,7 @@ class TimerApp(QMainWindow):
 
         self.timer_label = OutlinedLabel(self)
         self.timer_label.setAlignment(Qt.AlignCenter)
-        self.timer_label.setText("20:00")
+        self.timer_label.setText("01:00")
         self.timer_label.setStyleSheet("font-family: 'Segoe UI'; color: #ffffff; font-size: 140px;")
 
         self.start_button = QPushButton("Start Timer", self)
@@ -98,7 +98,7 @@ class TimerApp(QMainWindow):
         self.click_sound.setSource(QUrl.fromLocalFile("resources/click1.wav"))
 
         self.paused = False
-        self.remaining_time = timedelta(minutes=20)  # Set the initial timer duration
+        self.remaining_time = timedelta(minutes=1)  # Set the initial timer duration
 
     def play_click_sound(self):
         self.click_sound.play()
@@ -106,13 +106,13 @@ class TimerApp(QMainWindow):
     def start_timer(self):
         if not self.timer.isActive() and not self.paused:
             self.start_time = datetime.now()
-            self.timer.start(10)
+            self.timer.start(1000)  # Set the timer interval to 1000ms (1 second)
             self.start_button.setEnabled(False)  # Disable the start button once the timer has started
 
     def reset_timer(self):
         self.timer.stop()
-        self.remaining_time = timedelta(minutes=20)
-        self.timer_label.setText("20:00")
+        self.remaining_time = timedelta(minutes=1)
+        self.timer_label.setText("01:00")
         self.start_button.setEnabled(True)
         self.paused = False
 
@@ -124,11 +124,11 @@ class TimerApp(QMainWindow):
         else:
             if self.paused:
                 self.start_time = datetime.now()
-                self.timer.start(10)
+                self.timer.start(1000)
                 self.paused = False
             else:
                 self.start_time = datetime.now()
-                self.timer.start(10)
+                self.timer.start(1000)
                 self.paused = False
                 self.start_button.setEnabled(False)
 
@@ -150,15 +150,15 @@ class TimerApp(QMainWindow):
 
     def restart_timer(self):
         self.timer.stop()
-        self.remaining_time = timedelta(minutes=20)
-        self.timer_label.setText("20:00")
-        self.timer.start(10)
+        self.remaining_time = timedelta(minutes=1)
+        self.timer_label.setText("01:00")
+        self.timer.start(1000)
         self.start_time = datetime.now()
         self.start_button.setEnabled(False)
 
     def show_notification(self):
         toaster = ToastNotifier()
-        toaster.show_toast("20-20-20 Rule Reminder", "Look Away From The Screen For 20", duration=10)
+        toaster.show_toast("20-20-20 Rule Reminder", "Look Away From The Screen For 1 Minute", duration=10)
         self.play_click_sound()
 
     def create_system_tray_icon(self):
