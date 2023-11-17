@@ -1,11 +1,10 @@
-import sys, time
+import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
 from plyer import notification
 from PyQt5.QtMultimedia import QSoundEffect
-
 
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
@@ -100,16 +99,17 @@ class TimerApp(QMainWindow):
         self.notify_sound = QSoundEffect()
         self.notify_sound.setSource(QUrl.fromLocalFile("resources/notify.wav"))
         self.paused = False
-        self.remaining_time = timedelta(minutes=1)
+        self.elapsed_time = 0
+        self.timer_duration = timedelta(minutes=1)
         self.delay_timer = QTimer(self)
         self.delay_timer.timeout.connect(self.restart_timer)
         self.notification_shown = False
+
     def play_sound(self, sound_effect):
         if sound_effect.isLoaded():
             sound_effect.play()
         else:
             print("Error: Sound file not loaded.")
-
 
     def play_click_sound(self):
         self.play_sound(self.click_sound)
@@ -117,12 +117,12 @@ class TimerApp(QMainWindow):
     def start_timer(self):
         if not self.timer.isActive() and not self.paused:
             self.start_time = datetime.now()
-            self.timer.start(20)
+            self.timer.start(20) 
             self.start_button.setEnabled(False)
 
     def reset_timer(self):
         self.timer.stop()
-        self.remaining_time = timedelta(minutes=1)
+        self.elapsed_time = 0
         self.timer_label.setText("01:00")
         self.start_button.setEnabled(True)
         self.paused = False
@@ -131,7 +131,7 @@ class TimerApp(QMainWindow):
         if self.timer.isActive():
             self.timer.stop()
             self.paused = True
-            self.remaining_time = self.remaining_time - (datetime.now() - self.start_time)
+            self.elapsed_time += (datetime.now() - self.start_time).total_seconds()
         else:
             if self.paused:
                 self.start_time = datetime.now()
@@ -149,24 +149,23 @@ class TimerApp(QMainWindow):
 
     def update_timer(self):
         if self.start_time and not self.paused:
-            elapsed_time = datetime.now() - self.start_time
-            remaining_time = self.remaining_time - elapsed_time
+            elapsed_time = self.elapsed_time + (datetime.now() - self.start_time).total_seconds()
+            remaining_time = self.timer_duration.total_seconds() - elapsed_time
 
-            if remaining_time.total_seconds() <= 0:
+            if remaining_time <= 0:
                 self.show_notification()
             else:
-                formatted_time = str(max(remaining_time, timedelta(seconds=0))).split(".")[0]
-                if formatted_time.startswith("-"):
-                    formatted_time = "00:00"
-                    self.timer.stop()
-                    self.start_button.setEnabled(True)
+                minutes, seconds = divmod(int(remaining_time), 60)
+                formatted_time = f"{minutes:02d}:{seconds:02d}"
                 self.timer_label.setText(formatted_time)
 
     def restart_timer(self):
         self.timer.stop()
-        self.remaining_time = timedelta(minutes=1)
+        self.elapsed_time = 0
         self.timer_label.setText("01:00")
         self.start_timer()
+        self.notification_shown = False
+        self.delay_timer.stop()
 
     def show_notification(self):
         if not self.notification_shown:
@@ -175,13 +174,9 @@ class TimerApp(QMainWindow):
                 title="20-20-20 Rule Reminder",
                 message="Look Away From The Screen For 20 Seconds",
                 timeout=5,
-                app_name="20-20-20 Rule",
-                app_icon="resoures/20-20-20.jpg"
             )
             self.delay_timer.start(25 * 1000)
             self.notification_shown = True
-
-
 
     def create_system_tray_icon(self):
         menu = QMenu(self)
