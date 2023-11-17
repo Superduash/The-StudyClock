@@ -8,7 +8,7 @@ from plyer import notification
 
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
-        super(OutlinedLabel, self).__init__(parent)
+        super(QLabel, self).__init__(parent)
         self.text_color = QColor(255, 255, 255)
         self.outline_color = QColor(0, 0, 0)
         self.outline_size = 10
@@ -46,7 +46,9 @@ class Todo(QMainWindow):
         self.setWindowFlags(Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowState(Qt.WindowMaximized)
         self.setFixedSize(self.size())
-
+    
+        
+        
         self.setWindowTitle("ToDo List")
         layout = QVBoxLayout()
         central_widget = QWidget(self)
@@ -54,11 +56,13 @@ class Todo(QMainWindow):
         central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center; background-size: cover;")
 
         self.setCentralWidget(central_widget)
+        
+        
 
         icon_path = "resources/20-20-20.jpg"
         self.setWindowIcon(QIcon(icon_path))
+    
 
-        self.title = QLabel(self)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
