@@ -46,14 +46,14 @@ class Todo(QMainWindow):
         self.setWindowFlags(Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowState(Qt.WindowMaximized)
         self.setFixedSize(self.size())
-        
+
         self.setWindowTitle("ToDo List")
 
         icon_path = "resources/20-20-20.jpg"
         self.setWindowIcon(QIcon(icon_path))
-        
+
         self.title = QLabel(self)
-        
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     to_do = Todo()

@@ -155,7 +155,7 @@ class TimerApp(QMainWindow):
             if remaining_time.total_seconds() <= 0:
                 self.show_notification()
             else:
-                formatted_time = str(remaining_time).split(".")[0]
+                formatted_time = str(max(remaining_time, timedelta(seconds=0))).split(".")[0]
                 if formatted_time.startswith("-"):
                     formatted_time = "00:00"
                     self.timer.stop()
@@ -174,12 +174,14 @@ class TimerApp(QMainWindow):
             notification.notify(
                 title="20-20-20 Rule Reminder",
                 message="Look Away From The Screen For 20 Seconds",
-                timeout=5
+                timeout=5,
+                app_name="20-20-20 Rule",
+                app_icon="resoures/20-20-20.jpg"
             )
+            self.delay_timer.start(25 * 1000)
             self.notification_shown = True
 
-            if not self.timer.isActive():
-                self.delay_timer.start(25 * 1000)
+
 
     def create_system_tray_icon(self):
         menu = QMenu(self)
