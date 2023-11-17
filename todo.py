@@ -8,7 +8,7 @@ from plyer import notification
 
 class OutlinedLabel(QLabel):
     def __init__(self, parent=None):
-        super(QLabel, self).__init__(parent)
+        super(OutlinedLabel, self).__init__(parent)
         self.text_color = QColor(255, 255, 255)
         self.outline_color = QColor(0, 0, 0)
         self.outline_size = 10
