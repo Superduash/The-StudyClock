@@ -48,6 +48,12 @@ class Todo(QMainWindow):
         self.setFixedSize(self.size())
 
         self.setWindowTitle("ToDo List")
+        layout = QVBoxLayout()
+        central_widget = QWidget(self)
+        central_widget.setLayout(layout)
+        central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center; background-size: cover;")
+
+        self.setCentralWidget(central_widget)
 
         icon_path = "resources/20-20-20.jpg"
         self.setWindowIcon(QIcon(icon_path))
