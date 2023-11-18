@@ -6,13 +6,14 @@ from datetime import datetime, timedelta
 from PyQt5.QtMultimedia import QSoundEffect
 from plyer import notification
 
-class OutlinedLabel(QLabel):
+class QLabel(QLabel):
     def __init__(self, parent=None):
-        super(OutlinedLabel, self).__init__(parent)
+        super(QLabel, self).__init__(parent)
         self.text_color = QColor(255, 255, 255)
         self.outline_color = QColor(0, 0, 0)
         self.outline_size = 10
-
+        self.setWordWrap(True)
+        
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -20,7 +21,6 @@ class OutlinedLabel(QLabel):
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
 
         pen = QPen(QColor(self.outline_color))
-        pen.setWidth(self.outline_size)
         painter.setPen(pen)
 
         for i in range(-self.outline_size, self.outline_size + 1):
@@ -46,7 +46,9 @@ class Todo(QMainWindow):
         self.setWindowFlags(Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowState(Qt.WindowMaximized)
         self.setFixedSize(self.size())
-
+    
+        
+        
         self.setWindowTitle("ToDo List")
         layout = QVBoxLayout()
         central_widget = QWidget(self)
@@ -54,11 +56,22 @@ class Todo(QMainWindow):
         central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center; background-size: cover;")
 
         self.setCentralWidget(central_widget)
+        
+        self.title = QLabel(self)
+        self.title.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.title.setText("TO DO")
+        self.title.move(960,0)
+        self.title.setAutoFillBackground(True)
+        font = self.title.font()
+        font.setPointSize(50)
+        self.title.setFont(font)
+        
+        
 
         icon_path = "resources/20-20-20.jpg"
         self.setWindowIcon(QIcon(icon_path))
+    
 
-        self.title = QLabel(self)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
