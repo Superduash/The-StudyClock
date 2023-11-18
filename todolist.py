@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from datetime import timedelta, datetime
 from plyer import notification
 from PyQt5.QtMultimedia import QSoundEffect
+import mysql.connector
 
 class TimerApp(QMainWindow):
     def __init__(self):
@@ -15,14 +16,16 @@ class TimerApp(QMainWindow):
         icon_path = "todolisticon.png"
         self.setWindowIcon(QIcon(icon_path))
         
-        self.title = QLabel(self)
-        self.title.setText("TO DO")
-        self.title.setGeometry(0,0,960,0)
-
+        self.heading = QLabel(self)
+        self.heading.setText("TODO LIST")
+        self.heading.setGeometry(0,0,960,0)
+        self.heading.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        self.heading.setStyleSheet("font-size: 140px;")
+        
         layout = QVBoxLayout()
         container = QWidget(self)
         container.setLayout(layout)
-        layout.addWidget(self.title)
+        layout.addWidget(self.heading)
 
         central_widget = QWidget(self)
         central_widget.setLayout(layout)
