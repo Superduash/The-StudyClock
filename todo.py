@@ -13,7 +13,7 @@ class QLabel(QLabel):
         self.outline_color = QColor(0, 0, 0)
         self.outline_size = 10
         self.setWordWrap(True)
-        
+
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -46,9 +46,9 @@ class Todo(QMainWindow):
         self.setWindowFlags(Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowState(Qt.WindowMaximized)
         self.setFixedSize(self.size())
-    
-        
-        
+
+
+
         self.setWindowTitle("ToDo List")
         layout = QVBoxLayout()
         central_widget = QWidget(self)
@@ -56,7 +56,7 @@ class Todo(QMainWindow):
         central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center; background-size: cover;")
 
         self.setCentralWidget(central_widget)
-        
+
         self.title = QLabel(self)
         self.title.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.title.setText("TO DO")
@@ -65,12 +65,12 @@ class Todo(QMainWindow):
         font = self.title.font()
         font.setPointSize(50)
         self.title.setFont(font)
-        
-        
+
+
 
         icon_path = "resources/20-20-20.jpg"
         self.setWindowIcon(QIcon(icon_path))
-    
+
 
 
 if __name__ == "__main__":

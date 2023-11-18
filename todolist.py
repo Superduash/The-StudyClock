@@ -15,13 +15,13 @@ class TimerApp(QMainWindow):
 
         icon_path = "todolisticon.png"
         self.setWindowIcon(QIcon(icon_path))
-        
+
         self.heading = QLabel(self)
         self.heading.setText("TODO LIST")
         self.heading.setGeometry(0,0,960,0)
         self.heading.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self.heading.setStyleSheet("font-size: 140px;")
-      
+
         layout = QVBoxLayout()
         container = QWidget(self)
         container.setLayout(layout)
@@ -32,7 +32,7 @@ class TimerApp(QMainWindow):
         central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center; background-size: cover;")
 
         self.setCentralWidget(central_widget)
-        
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     timer_app = TimerApp()
