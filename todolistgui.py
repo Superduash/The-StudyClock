@@ -1,5 +1,14 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from datetime import timedelta, datetime
+from plyer import notification
+from PyQt5.QtMultimedia import QSoundEffect
+import mysql.connector
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QVBoxLayout, QListWidget, QListWidgetItem, QCheckBox, QWidget
+
 
 
 class Ui_MainWindow(object):
@@ -166,9 +175,14 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
     def addit(self):
-            item = self.task_input.toPlainText()    
-            self.task_list.addItem(item)
-            self.task_input.setText("")    
+            task_text = self.task_input.toPlainText()  
+            if task_text:
+                    item = QListWidgetItem()
+                    checkbox_item = QCheckBox(task_text)
+                    item.setSizeHint(checkbox_item.sizeHint())
+                    self.task_list.addItem(item)
+                    self.task_list.setItemWidget(item, checkbox_item)
+                    self.task_input.clear()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
