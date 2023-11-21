@@ -237,7 +237,8 @@ QPushButton:hover {
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">
+</string>
        </property>
       </widget>
       <widget class="QLabel" name="task_list_title">
