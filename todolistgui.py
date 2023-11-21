@@ -165,16 +165,16 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        
+
     def addit(self):
-            task_text = self.task_input.toPlainText()  
+            task_text = self.task_input.toPlainText()
             if task_text:
                     item = QListWidgetItem()
                     checkbox_item = QCheckBox(task_text)
                     item.setSizeHint(checkbox_item.sizeHint())
                     self.task_list.addItem(item)
                     self.task_list.setItemWidget(item, checkbox_item)
-                    self.task_input.clear()    
+                    self.task_input.clear()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
