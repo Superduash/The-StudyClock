@@ -36,7 +36,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../CS-Project/resources/bg.jpg</pixmap>
+      <pixmap>../resources/bg.jpg</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -85,7 +85,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../CS-Project/resources/taskbuddy.png</pixmap>
+        <pixmap>../resources/taskbuddy.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -142,7 +142,7 @@ QPushButton:hover {
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../CS-Project/resources/plus symbol.png</normaloff>../CS-Project/resources/plus symbol.png</iconset>
+         <normaloff>../resources/plus symbol.png</normaloff>../resources/plus symbol.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -202,7 +202,7 @@ QPushButton:hover {
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../CS-Project/resources/gear.png</normaloff>../CS-Project/resources/gear.png</iconset>
+         <normaloff>../resources/gear.png</normaloff>../resources/gear.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -237,7 +237,7 @@ QPushButton:hover {
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: transparent;</string>
+        <string notr="true"/>
        </property>
       </widget>
       <widget class="QLabel" name="task_list_title">
@@ -312,7 +312,7 @@ QPushButton:hover {
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../CS-Project/resources/todolisticon.png</normaloff>../CS-Project/resources/todolisticon.png</iconset>
+         <normaloff>../resources/todolisticon.png</normaloff>../resources/todolisticon.png</iconset>
        </property>
        <property name="iconSize">
         <size>
