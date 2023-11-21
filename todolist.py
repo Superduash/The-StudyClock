@@ -13,15 +13,6 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         
-        def addit(self):
-            task_text = self.task_input.toPlainText()  
-            if task_text:
-                    item = QListWidgetItem()
-                    checkbox_item = QCheckBox(task_text)
-                    item.setSizeHint(checkbox_item.sizeHint())
-                    self.task_list.addItem(item)
-                    self.task_list.setItemWidget(item, checkbox_item)
-                    self.task_input.clear()
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyMainWindow()

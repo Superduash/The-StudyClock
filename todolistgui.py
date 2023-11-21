@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_3.setObjectName("frame_3")
-        self.Create_task = QtWidgets.QPushButton(self.frame_3)
+        self.Create_task = QtWidgets.QPushButton(self.frame_3, clicked= lambda: self.addit())
         self.Create_task.setGeometry(QtCore.QRect(10, 20, 170, 90))
         font = QtGui.QFont()
         font.setFamily("Segoe UI Variable Display Semib")
