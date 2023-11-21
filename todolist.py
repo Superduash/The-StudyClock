@@ -12,9 +12,9 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        
+
         def addit(self):
-            task_text = self.task_input.toPlainText()  
+            task_text = self.task_input.toPlainText()
             if task_text:
                     item = QListWidgetItem()
                     checkbox_item = QCheckBox(task_text)
