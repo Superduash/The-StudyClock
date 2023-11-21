@@ -1,14 +1,6 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from datetime import timedelta, datetime
-from plyer import notification
-from PyQt5.QtMultimedia import QSoundEffect
-import mysql.connector
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QVBoxLayout, QListWidget, QListWidgetItem, QCheckBox, QWidget
-
 
 
 class Ui_MainWindow(object):
@@ -23,7 +15,7 @@ class Ui_MainWindow(object):
         self.bg = QtWidgets.QLabel(self.widget)
         self.bg.setGeometry(QtCore.QRect(0, 0, 960, 483))
         self.bg.setText("")
-        self.bg.setPixmap(QtGui.QPixmap("../CS-Project/resources/bg.jpg"))
+        self.bg.setPixmap(QtGui.QPixmap("../resources/bg.jpg"))
         self.bg.setScaledContents(True)
         self.bg.setObjectName("bg")
         self.frame = QtWidgets.QFrame(self.widget)
@@ -39,7 +31,7 @@ class Ui_MainWindow(object):
         self.title = QtWidgets.QLabel(self.frame_2)
         self.title.setGeometry(QtCore.QRect(270, -10, 461, 111))
         self.title.setText("")
-        self.title.setPixmap(QtGui.QPixmap("../CS-Project/resources/taskbuddy.png"))
+        self.title.setPixmap(QtGui.QPixmap("../resources/taskbuddy.png"))
         self.title.setScaledContents(True)
         self.title.setObjectName("title")
         self.frame_3 = QtWidgets.QFrame(self.frame)
@@ -47,7 +39,7 @@ class Ui_MainWindow(object):
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_3.setObjectName("frame_3")
-        self.Create_task = QtWidgets.QPushButton(self.frame_3,clicked = lambda: self.addit())
+        self.Create_task = QtWidgets.QPushButton(self.frame_3)
         self.Create_task.setGeometry(QtCore.QRect(10, 20, 170, 90))
         font = QtGui.QFont()
         font.setFamily("Segoe UI Variable Display Semib")
@@ -64,10 +56,10 @@ class Ui_MainWindow(object):
 "QPushButton:hover {\n"
 "    background-color: rgba(0, 0, 255, 50);\n"
 "    border: 2px solid #000080;\n"
-"    transition: background-color 0.3s, border 0.3s; \n"
+"    transition: background-color 0.3s, border 0.3s;\n"
 "}")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../CS-Project/resources/plus symbol.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("../resources/plus symbol.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.Create_task.setIcon(icon)
         self.Create_task.setIconSize(QtCore.QSize(110, 60))
         self.Create_task.setObjectName("Create_task")
@@ -93,10 +85,10 @@ class Ui_MainWindow(object):
 "QPushButton:hover {\n"
 "    background-color: rgba(0, 0, 255, 50);\n"
 "    border: 2px solid #000080;\n"
-"    transition: background-color 0.3s, border 0.3s; \n"
+"    transition: background-color 0.3s, border 0.3s;\n"
 "}")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("../CS-Project/resources/gear.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap("../resources/gear.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.Settings.setIcon(icon1)
         self.Settings.setIconSize(QtCore.QSize(100, 50))
         self.Settings.setObjectName("Settings")
@@ -107,7 +99,8 @@ class Ui_MainWindow(object):
         self.frame_5.setObjectName("frame_5")
         self.task_list = QtWidgets.QListWidget(self.frame_5)
         self.task_list.setGeometry(QtCore.QRect(0, 60, 401, 271))
-        self.task_list.setStyleSheet("background-color: transparent;")
+        self.task_list.setStyleSheet("\n"
+"")
         self.task_list.setObjectName("task_list")
         self.task_list_title = QtWidgets.QLabel(self.frame_5)
         self.task_list_title.setGeometry(QtCore.QRect(0, 0, 381, 51))
@@ -140,10 +133,10 @@ class Ui_MainWindow(object):
 "QPushButton:hover {\n"
 "    background-color: rgba(0, 0, 255, 50);\n"
 "    border: 2px solid #000080;\n"
-"    transition: background-color 0.3s, border 0.3s; \n"
+"    transition: background-color 0.3s, border 0.3s;\n"
 "}")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("../CS-Project/resources/todolisticon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap("../resources/todolisticon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.Completed.setIcon(icon2)
         self.Completed.setIconSize(QtCore.QSize(141, 51))
         self.Completed.setObjectName("Completed")
@@ -170,7 +163,6 @@ class Ui_MainWindow(object):
         self.task_input.setObjectName("task_input")
         MainWindow.setCentralWidget(self.centralwidget)
 
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
@@ -182,7 +174,7 @@ class Ui_MainWindow(object):
                     item.setSizeHint(checkbox_item.sizeHint())
                     self.task_list.addItem(item)
                     self.task_list.setItemWidget(item, checkbox_item)
-                    self.task_input.clear()
+                    self.task_input.clear()    
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -197,9 +189,3 @@ class Ui_MainWindow(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Segoe UI Variable Display\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:7.8pt;\"><br /></p></body></html>"))
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
