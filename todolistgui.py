@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QVBoxLayout, QListWidget, QListWidgetItem, QCheckBox, QWidget
-
+import sqlite3
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -190,11 +190,12 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
-    def deleteit(self):
+        
+        def deleteit(self):
             clicked = self.task_list.currentRow()    
             self.task_list.takeItem(clicked)
-
-    def addit(self):
+            
+        def addit(self):
             task_text = self.task_input.toPlainText()
             if task_text:
                     item = QListWidgetItem()
@@ -203,6 +204,7 @@ class Ui_MainWindow(object):
                     self.task_list.addItem(item)
                     self.task_list.setItemWidget(item, checkbox_item)
                     self.task_input.clear()
+                    
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
