@@ -162,6 +162,30 @@ class Ui_MainWindow(object):
         self.task_input.setFont(font)
         self.task_input.setObjectName("task_input")
         MainWindow.setCentralWidget(self.centralwidget)
+        self.delete_2= QtWidgets.QPushButton(self.frame)
+        self.delete_2.setGeometry(QtCore.QRect(710, 330, 201, 51))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI Variable Display Semib")
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.delete_2.setFont(font)
+        self.delete_2.setStyleSheet("QPushButton {\n"
+"    background-color: transparent;\n"
+"    border: 2px solid black;\n"
+"    border-radius: 25px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: rgba(0, 0, 255, 50);\n"
+"    border: 2px solid #000080;\n"
+"    transition: background-color 0.3s, border 0.3s;\n"
+"}")
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap("resources/deleteic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.delete_2.setIcon(icon3)
+        self.delete_2.setIconSize(QtCore.QSize(131, 41))
+        self.delete_2.setObjectName("Delete Task")
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
