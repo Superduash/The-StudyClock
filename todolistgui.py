@@ -5,8 +5,9 @@ import sqlite3
 
 conn = sqlite3.connect('task_buddy.db')
 c = conn.cursor()
-c.execute("""CREATE TABLE if not exists todo_list
-          list_item text""")
+c.execute("""CREATE TABLE if not exists todo_list(
+          list_item text)
+          """)
 conn.commit()
 conn.close()
 class Ui_MainWindow(object):
@@ -198,7 +199,7 @@ class Ui_MainWindow(object):
         
         self.graball()
         
-        def graball():
+        def graball(self):
                 conn = sqlite3.connect('task_buddy.db')
                 c = conn.cursor()
                 c.execute('SELECT * FROM todo_list')
@@ -225,11 +226,12 @@ class Ui_MainWindow(object):
             
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
-            c.execute('INSERT INTO todo_list VALUES (:item)'
+            c.execute('INSERT INTO todo_list VALUES (:item)',
                       {
-                           'list_item' : task_text.text()   
-                      }
-                      )
+                           'list_item' : task_text.text(),   
+                      })
+            conn.commit()
+            conn.close()
             if task_text:
                     item = QListWidgetItem()
                     checkbox_item = QCheckBox(task_text)
