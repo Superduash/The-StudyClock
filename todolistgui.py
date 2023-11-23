@@ -198,8 +198,9 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
         self.graball()
-        
-        def graball(self):
+                        
+                    
+    def graball(self):
                 conn = sqlite3.connect('task_buddy.db')
                 c = conn.cursor()
                 c.execute('SELECT * FROM todo_list')
@@ -210,26 +211,16 @@ class Ui_MainWindow(object):
                 
                 for record in records:
                         item = QListWidgetItem()
-                        chekbox = QCheckBox(str(record))
+                        chekbox = QCheckBox(str(record[0]))
                         item.setSizeHint(chekbox.sizeHint())
                         self.task_list.addItem(item)
                         self.task_list.setItemWidget(item, chekbox)
-                        
-                
-        
-        def deleteit(self):
-            clicked = self.task_list.currentRow()    
-            self.task_list.takeItem(clicked)
-            
-        def addit(self):
+    def addit(self):
             task_text = self.task_input.toPlainText()
             
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
-            c.execute('INSERT INTO todo_list VALUES (:item)',
-                      {
-                           'list_item' : task_text.text(),   
-                      })
+            c.execute('INSERT INTO todo_list (list_item) VALUES (?)', (task_text,))
             conn.commit()
             conn.close()
             if task_text:
@@ -239,8 +230,16 @@ class Ui_MainWindow(object):
                     self.task_list.addItem(item)
                     self.task_list.setItemWidget(item, checkbox_item)
                     self.task_input.clear()
-                    
-
+    def deleteit(self):
+            
+            clicked = self.task_list.currentRow()    
+            self.task_list.takeItem(clicked)
+            conn = sqlite3.connect('task_buddy.db')
+            c = conn.cursor()
+            c.execute()
+            conn.commit()
+            conn.close()
+            
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
