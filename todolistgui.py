@@ -197,19 +197,19 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        
+
         self.graball()
-                        
-                    
+
+
     def graball(self):
                 conn = sqlite3.connect('task_buddy.db')
                 c = conn.cursor()
                 c.execute('SELECT * FROM todo_list')
                 records = c.fetchall()
-                
+
                 conn.commit()
-                conn.close() 
-                
+                conn.close()
+
                 if not records:
                         pass
                 else:
@@ -219,7 +219,7 @@ class Ui_MainWindow(object):
                                 item.setSizeHint(chekbox.sizeHint())
                                 self.task_list.addItem(item)
                                 self.task_list.setItemWidget(item, chekbox)
-                        
+
     def addit(self):
             task_text = self.task_input.toPlainText()
             row_count = self.task_list.count()
@@ -239,8 +239,8 @@ class Ui_MainWindow(object):
                     self.task_list.addItem(item)
                     self.task_list.setItemWidget(item, checkbox_item)
                     self.task_input.clear()
-    def deleteit(self):    
-            clicked = self.task_list.currentRow() 
+    def deleteit(self):
+            clicked = self.task_list.currentRow()
             print(clicked)
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
@@ -249,9 +249,9 @@ class Ui_MainWindow(object):
             conn.commit()
             conn.close()
             self.task_list.takeItem(clicked)
-            
-            
-            
+
+
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))

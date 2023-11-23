@@ -117,7 +117,7 @@ class TimerApp(QMainWindow):
     def start_timer(self):
         if not self.timer.isActive() and not self.paused:
             self.start_time = datetime.now()
-            self.timer.start(20) 
+            self.timer.start(20)
             self.start_button.setEnabled(False)
 
     def reset_timer(self):
