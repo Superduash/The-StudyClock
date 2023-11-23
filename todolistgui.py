@@ -236,7 +236,10 @@ class Ui_MainWindow(object):
             self.task_list.takeItem(clicked)
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
-            c.execute()
+            delete_query = "DELETE FROM todo_list WHERE list_item = ?"
+            condition_value = str(clicked)
+            c.execute(delete_query, (condition_value,))
+
             conn.commit()
             conn.close()
             
