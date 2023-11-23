@@ -210,15 +210,21 @@ class Ui_MainWindow(object):
                 conn.commit()
                 conn.close() 
                 
-                for record in records:
-                        item = QListWidgetItem()
-                        chekbox = QCheckBox(str(record[0]))
-                        item.setSizeHint(chekbox.sizeHint())
-                        self.task_list.addItem(item)
-                        self.task_list.setItemWidget(item, chekbox)
+                if not records:
+                        pass
+                else:
+                        for record in records:
+                                item = QListWidgetItem()
+                                chekbox = QCheckBox(str(record[0]))
+                                item.setSizeHint(chekbox.sizeHint())
+                                self.task_list.addItem(item)
+                                self.task_list.setItemWidget(item, chekbox)
+                        
     def addit(self):
             task_text = self.task_input.toPlainText()
             row_count = self.task_list.count()
+            if row_count is None:
+                    row_count = 0
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
             c.execute('INSERT INTO todo_list (list_item) VALUES (?)', (task_text,))
@@ -234,13 +240,13 @@ class Ui_MainWindow(object):
                     self.task_input.clear()
     def deleteit(self):    
             clicked = self.task_list.currentRow() 
-            self.task_list.takeItem(clicked)
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
             c.execute("DELETE FROM todo_list WHERE row_id = ?", (int(clicked),))
 
             conn.commit()
             conn.close()
+            self.task_list.takeItem(clicked)
             
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
