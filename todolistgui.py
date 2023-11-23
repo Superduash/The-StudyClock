@@ -232,13 +232,14 @@ class Ui_MainWindow(object):
                     self.task_input.clear()
     def deleteit(self):
             
-            clicked = self.task_list.currentRow()    
+            clicked = self.task_list.currentRow() 
+            selected_item = self.task_list.currentItem()   
             self.task_list.takeItem(clicked)
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
-            delete_query = "DELETE FROM todo_list WHERE list_item = ?"
-            condition_value = str(clicked)
-            c.execute(delete_query, (condition_value,))
+            row_to_delete = selected_item
+            print(selected_item)
+            c.execute("DELETE FROM todo_list WHERE list_item = ?", (str(selected_item),))
 
             conn.commit()
             conn.close()
