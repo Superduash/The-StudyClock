@@ -227,8 +227,9 @@ class Ui_MainWindow(object):
                     row_count = 0
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
-            c.execute('INSERT INTO todo_list (list_item) VALUES (?)', (task_text,))
-            c.execute('INSERT INTO todo_list (row_id) VALUES (?)', (row_count,))
+            data_to_insert = [(task_text,row_count)]
+            insert_query = "INSERT INTO todo_list (list_item, row_id) VALUES (?,?)"
+            c.executemany(insert_query, data_to_insert)
             conn.commit()
             conn.close()
             if task_text:
@@ -240,6 +241,7 @@ class Ui_MainWindow(object):
                     self.task_input.clear()
     def deleteit(self):    
             clicked = self.task_list.currentRow() 
+            print(clicked)
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
             c.execute("DELETE FROM todo_list WHERE row_id = ?", (int(clicked),))
@@ -247,6 +249,8 @@ class Ui_MainWindow(object):
             conn.commit()
             conn.close()
             self.task_list.takeItem(clicked)
+            
+            
             
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
