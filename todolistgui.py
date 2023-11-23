@@ -3,6 +3,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QVBoxLayout, QListWidget, QListWidgetItem, QCheckBox, QWidget
 import sqlite3
 
+conn = sqlite3.connect('task_buddy.db')
+c = conn.cursor()
+c.execute("""CREATE TABLE if not exists todo_list
+          list_item text""")
+conn.commit()
+conn.close()
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -190,6 +196,25 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
+        self.graball()
+        
+        def graball():
+                conn = sqlite3.connect('task_buddy.db')
+                c = conn.cursor()
+                c.execute('SELECT * FROM todo_list')
+                records = c.fetchall()
+                
+                conn.commit()
+                conn.close() 
+                
+                for record in records:
+                        item = QListWidgetItem()
+                        chekbox = QCheckBox(str(record))
+                        item.setSizeHint(chekbox.sizeHint())
+                        self.task_list.addItem(item)
+                        self.task_list.setItemWidget(item, chekbox)
+                        
+                
         
         def deleteit(self):
             clicked = self.task_list.currentRow()    
@@ -197,6 +222,14 @@ class Ui_MainWindow(object):
             
         def addit(self):
             task_text = self.task_input.toPlainText()
+            
+            conn = sqlite3.connect('task_buddy.db')
+            c = conn.cursor()
+            c.execute('INSERT INTO todo_list VALUES (:item)'
+                      {
+                           'list_item' : task_text.text()   
+                      }
+                      )
             if task_text:
                     item = QListWidgetItem()
                     checkbox_item = QCheckBox(task_text)
