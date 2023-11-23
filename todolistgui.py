@@ -6,7 +6,8 @@ import sqlite3
 conn = sqlite3.connect('task_buddy.db')
 c = conn.cursor()
 c.execute("""CREATE TABLE if not exists todo_list(
-          list_item text)
+          list_item text,
+          row_id int)
           """)
 conn.commit()
 conn.close()
@@ -217,10 +218,11 @@ class Ui_MainWindow(object):
                         self.task_list.setItemWidget(item, chekbox)
     def addit(self):
             task_text = self.task_input.toPlainText()
-            
+            row_count = self.task_list.count()
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
             c.execute('INSERT INTO todo_list (list_item) VALUES (?)', (task_text,))
+            c.execute('INSERT INTO todo_list (row_id) VALUES (?)', (row_count,))
             conn.commit()
             conn.close()
             if task_text:
@@ -230,16 +232,12 @@ class Ui_MainWindow(object):
                     self.task_list.addItem(item)
                     self.task_list.setItemWidget(item, checkbox_item)
                     self.task_input.clear()
-    def deleteit(self):
-            
+    def deleteit(self):    
             clicked = self.task_list.currentRow() 
-            selected_item = self.task_list.currentItem()   
             self.task_list.takeItem(clicked)
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
-            row_to_delete = selected_item
-            print(selected_item)
-            c.execute("DELETE FROM todo_list WHERE list_item = ?", (str(selected_item),))
+            c.execute("DELETE FROM todo_list WHERE row_id = ?", (int(clicked),))
 
             conn.commit()
             conn.close()
