@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Completed Tasks</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../resources/tick.png</normaloff>../resources/tick.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">

@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Task Buddy!</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../resources/todo.png</normaloff>../resources/todo.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
@@ -174,11 +178,11 @@ QPushButton:hover {
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../resources/todolisticon.png</normaloff>../resources/todolisticon.png</iconset>
+           <normaloff>../resources/tick.png</normaloff>../resources/tick.png</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>45</width>
+           <width>35</width>
            <height>51</height>
           </size>
          </property>
@@ -282,10 +286,10 @@ QPushButton:hover {
       <widget class="QPushButton" name="Create_task">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>200</y>
-         <width>211</width>
-         <height>71</height>
+         <x>30</x>
+         <y>170</y>
+         <width>171</width>
+         <height>61</height>
         </rect>
        </property>
        <property name="font">
@@ -314,11 +318,11 @@ QPushButton:hover {
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../resources/plus symbol.png</normaloff>../resources/plus symbol.png</iconset>
+         <normaloff>../resources/plus.png</normaloff>../resources/plus.png</iconset>
        </property>
        <property name="iconSize">
         <size>
-         <width>50</width>
+         <width>35</width>
          <height>50</height>
         </size>
        </property>
@@ -327,7 +331,7 @@ QPushButton:hover {
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>60</y>
+         <y>55</y>
          <width>199</width>
          <height>35</height>
         </rect>
