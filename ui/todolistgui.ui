@@ -348,7 +348,7 @@ QPushButton:hover {
         <string>Enter the task :</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="task_input">
        <property name="geometry">
         <rect>
          <x>10</x>

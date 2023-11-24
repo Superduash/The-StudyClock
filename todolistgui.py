@@ -65,7 +65,7 @@ class Ui_MainWindow(object):
             self.task_list.setItemWidget(item, checkbox_item)
 
     def add_task(self):
-        task_text = self.task_input.toPlainText()
+        task_text = self.task_input.text()
 
         if task_text:
             db_manager = DatabaseManager()
