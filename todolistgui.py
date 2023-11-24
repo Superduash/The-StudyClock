@@ -13,10 +13,14 @@ class DatabaseManager:
         self.conn.close()
 
     def fetch_all_tasks(self):
+        self.conn = sqlite3.connect('task_buddy.db')
+        self.c = self.conn.cursor()
         self.c.execute('SELECT * FROM todo_list')
         return self.c.fetchall()
 
     def add_task(self, task_text):
+        self.conn = sqlite3.connect('task_buddy.db')
+        self.c = self.conn.cursor()
         self.c.execute('SELECT MAX(row_id) FROM todo_list')
         row_count = self.c.fetchone()[0] or 0
         data_to_insert = [(task_text, row_count + 1)]
@@ -25,6 +29,8 @@ class DatabaseManager:
         self.conn.commit()
 
     def delete_task(self, row_id):
+        self.conn = sqlite3.connect('task_buddy.db')
+        self.c = self.conn.cursor()
         self.c.execute("DELETE FROM todo_list WHERE row_id = ?", (row_id,))
         self.conn.commit()
 
