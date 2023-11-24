@@ -51,7 +51,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>../CS-Project/resources/bg.jpg</pixmap>
+       <pixmap>../resources/bg.jpg</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -85,7 +85,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../CS-Project/resources/finished_assigments.png</pixmap>
+        <pixmap>../resources/finished_assigments.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
