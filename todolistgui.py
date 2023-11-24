@@ -4,6 +4,7 @@ from PyQt5 import uic, QtCore, QtGui
 from plyer import notification
 import sqlite3
 
+
 class DatabaseManager:
     def __init__(self):
         self.conn = sqlite3.connect('task_buddy.db')
@@ -33,6 +34,7 @@ class DatabaseManager:
         self.c = self.conn.cursor()
         self.c.execute("DELETE FROM todo_list WHERE row_id = ?", (row_id,))
         self.conn.commit()
+        
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -41,7 +43,7 @@ class Ui_MainWindow(object):
         self.Settings.clicked.connect(self.open_settings_dialog)
         self.Create_task.clicked.connect(self.add_task)
         self.graball()
-
+        
     def open_settings_dialog(self):
         settings_dialog = QDialog(self)
         uic.loadUi("ui/todosettings.ui", settings_dialog)
@@ -51,7 +53,6 @@ class Ui_MainWindow(object):
         db_manager = DatabaseManager()
         records = db_manager.fetch_all_tasks()
         db_manager.close_connection()
-
         self.task_list.clear()
 
         for record in records:
@@ -106,7 +107,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.create_tray_icon()
         #self.minimizeButton.clicked.connect(self.minimize_to_system_tray)
         self.schedule_notifications()
-
+        
     def setup_animations(self):
         self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")
         self.fade_in_animation.setStartValue(0)
