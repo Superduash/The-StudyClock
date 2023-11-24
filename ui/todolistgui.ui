@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>960</width>
-    <height>483</height>
+    <width>991</width>
+    <height>543</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>960</width>
-      <height>483</height>
+      <width>1013</width>
+      <height>543</height>
      </rect>
     </property>
     <widget class="QLabel" name="bg">
@@ -28,8 +28,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>960</width>
-       <height>483</height>
+       <width>1013</width>
+       <height>543</height>
       </rect>
      </property>
      <property name="text">
@@ -47,8 +47,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>960</width>
-       <height>483</height>
+       <width>1013</width>
+       <height>543</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -60,9 +60,9 @@
      <widget class="QFrame" name="frame_2">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>961</width>
+        <x>290</x>
+        <y>10</y>
+        <width>371</width>
         <height>101</height>
        </rect>
       </property>
@@ -75,9 +75,9 @@
       <widget class="QLabel" name="title">
        <property name="geometry">
         <rect>
-         <x>320</x>
-         <y>0</y>
-         <width>311</width>
+         <x>30</x>
+         <y>2</y>
+         <width>321</width>
          <height>91</height>
         </rect>
        </property>
@@ -92,13 +92,185 @@
        </property>
       </widget>
      </widget>
-     <widget class="QFrame" name="frame_3">
+     <widget class="QFrame" name="frame_4">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>120</y>
-        <width>221</width>
-        <height>131</height>
+        <x>720</x>
+        <y>160</y>
+        <width>271</width>
+        <height>351</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QPushButton" name="Settings">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s;
+}</string>
+         </property>
+         <property name="text">
+          <string>  Task Settings</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/credits.png</normaloff>../resources/credits.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>45</width>
+           <height>51</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="Completed">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s;
+}</string>
+         </property>
+         <property name="text">
+          <string>  Completed</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/todolisticon.png</normaloff>../resources/todolisticon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>45</width>
+           <height>51</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="delete_2">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s;
+}</string>
+         </property>
+         <property name="text">
+          <string>  Delete Task</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/deleteic.png</normaloff>../resources/deleteic.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>35</width>
+           <height>51</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QFrame" name="frame_5">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>110</y>
+        <width>471</width>
+        <height>421</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="task_list_title">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>24</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Ongoing Tasks : -</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="task_list">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QFrame" name="frame_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>241</width>
+        <height>291</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -111,9 +283,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>20</y>
-         <width>170</width>
-         <height>90</height>
+         <y>200</y>
+         <width>211</width>
+         <height>71</height>
         </rect>
        </property>
        <property name="font">
@@ -138,7 +310,7 @@ QPushButton:hover {
 }</string>
        </property>
        <property name="text">
-        <string>Enter</string>
+        <string>  Enter</string>
        </property>
        <property name="icon">
         <iconset>
@@ -146,210 +318,24 @@ QPushButton:hover {
        </property>
        <property name="iconSize">
         <size>
-         <width>110</width>
-         <height>60</height>
+         <width>50</width>
+         <height>50</height>
         </size>
        </property>
       </widget>
-     </widget>
-     <widget class="QFrame" name="frame_4">
-      <property name="geometry">
-       <rect>
-        <x>700</x>
-        <y>100</y>
-        <width>241</width>
-        <height>141</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QPushButton" name="Settings">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>70</y>
-         <width>201</width>
-         <height>61</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>14</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: transparent;
-    border: 2px solid black;
-    border-radius: 25px;
-}
-
-QPushButton:hover {
-    background-color: rgba(0, 0, 255, 50);
-    border: 2px solid #000080;
-    transition: background-color 0.3s, border 0.3s;
-}</string>
-       </property>
-       <property name="text">
-        <string> Settings</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../resources/gear.png</normaloff>../resources/gear.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>51</width>
-         <height>51</height>
-        </size>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame_5">
-      <property name="geometry">
-       <rect>
-        <x>250</x>
-        <y>130</y>
-        <width>451</width>
-        <height>351</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QListWidget" name="task_list">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>60</y>
-         <width>401</width>
-         <height>271</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-      </widget>
-      <widget class="QLabel" name="task_list_title">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>381</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Segoe UI Variable Small Semibol</family>
-         <pointsize>22</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Today's Mission :</string>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame_7">
-      <property name="geometry">
-       <rect>
-        <x>700</x>
-        <y>260</y>
-        <width>211</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QPushButton" name="Completed">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>0</y>
-         <width>201</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>14</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: transparent;
-    border: 2px solid black;
-    border-radius: 25px;
-}
-
-QPushButton:hover {
-    background-color: rgba(0, 0, 255, 50);
-    border: 2px solid #000080;
-    transition: background-color 0.3s, border 0.3s;
-}</string>
-       </property>
-       <property name="text">
-        <string>Completed</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../resources/todolisticon.png</normaloff>../resources/todolisticon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>51</width>
-         <height>51</height>
-        </size>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame_6">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>250</y>
-        <width>201</width>
-        <height>211</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
       <widget class="QLabel" name="entertask">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>10</y>
-         <width>171</width>
-         <height>61</height>
+         <x>10</x>
+         <y>60</y>
+         <width>199</width>
+         <height>35</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Segoe UI Variable Display Semib</family>
-         <pointsize>14</pointsize>
+         <family>Trebuchet MS</family>
+         <pointsize>16</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -358,30 +344,32 @@ QPushButton:hover {
         <string>Enter the task :</string>
        </property>
       </widget>
-      <widget class="QTextEdit" name="task_input">
+      <widget class="QLineEdit" name="lineEdit">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>60</y>
-         <width>181</width>
-         <height>51</height>
+         <x>10</x>
+         <y>100</y>
+         <width>211</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Segoe UI Variable Display</family>
-         <pointsize>12</pointsize>
+         <family>Trebuchet MS</family>
+         <pointsize>14</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="delete_2">
+     <widget class="QPushButton" name="Settings_2">
       <property name="geometry">
        <rect>
-        <x>710</x>
-        <y>330</y>
-        <width>201</width>
-        <height>51</height>
+        <x>760</x>
+        <y>30</y>
+        <width>197</width>
+        <height>55</height>
        </rect>
       </property>
       <property name="font">
@@ -406,16 +394,16 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>Delete Task</string>
+       <string> Settings</string>
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../resources/deleteic.png</normaloff>../resources/deleteic.png</iconset>
+        <normaloff>../resources/gear.png</normaloff>../resources/gear.png</iconset>
       </property>
       <property name="iconSize">
        <size>
-        <width>35</width>
-        <height>35</height>
+        <width>45</width>
+        <height>51</height>
        </size>
       </property>
      </widget>
