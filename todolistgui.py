@@ -98,14 +98,6 @@ class Ui_MainWindow(object):
         deletion_time = current_datetime.time().toString("hh:mm:ss")
         clicked_item = self.task_list.currentRow()
         print(clicked_item)
-        query = "INSERT INTO completed_tasks (task, date_of_completion, time_of_completion, row_id) VALUES (?, ?, ?, ?)"
-        data_to_insert = [(task,deletion_date,deletion_time,clicked_item)]
-        conn = sqlite3.connect('task_buddy.db')
-        c = conn.cursor()
-        c.executemany(query,data_to_insert)
-        conn.commit()
-        conn.close()
-        print("success")
         if clicked_checkbox.isChecked():
             query = "INSERT INTO completed_tasks (task, date_of_completion, time_of_completion, row_id) VALUES (?, ?, ?, ?)"
             data_to_insert = [(task,deletion_date,deletion_time,clicked_item)]
@@ -114,6 +106,7 @@ class Ui_MainWindow(object):
             c.executemany(query,data_to_insert)
             conn.commit()
             conn.close()
+            print("success")
             item = self.task_list.itemAt(clicked_checkbox.pos())
             db_manager.delete_task(clicked_checkbox.row_id)
             self.task_list.takeItem(self.task_list.row(item))
