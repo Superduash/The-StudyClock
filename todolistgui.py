@@ -19,7 +19,7 @@ c.execute("""CREATE TABLE if not exists completed_tasks(
     task text
     date_of_completion text
     time_of_completion text
-    row_id int   
+    row_id int
     )""")
 conn.commit()
 conn.close()
@@ -54,7 +54,7 @@ class DatabaseManager:
         self.c = self.conn.cursor()
         self.c.execute("DELETE FROM todo_list WHERE row_id = ?", (row_id,))
         self.conn.commit()
-        
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -64,7 +64,7 @@ class Ui_MainWindow(object):
         self.Create_task.clicked.connect(self.add_task)
         self.Completed.clicked.connect(self.open_completed_tasks)
         self.graball()
-        
+
     def open_settings_dialog(self):
          self.todosettings = todoSettings()
          self.todosettings.show()
@@ -130,13 +130,13 @@ class Ui_MainWindow(object):
             db_manager = DatabaseManager()
             db_manager.insert_into_completed_tasks(self,task,deletion_date,deletion_time,clicked_item)
             self.task_list.takeItem(self.task_list.row(clicked_item))
-            
-            
+
+
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()'''
-            
-            
-            
+
+
+
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -146,7 +146,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.create_tray_icon()
         #self.minimizeButton.clicked.connect(self.minimize_to_system_tray)
         self.schedule_notifications()
-        
+
     def setup_animations(self):
         self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")
         self.fade_in_animation.setStartValue(0)
