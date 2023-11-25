@@ -5,12 +5,21 @@ from plyer import notification
 import sqlite3
 from completed import SecondWindow
 from todosettings import todoSettings
+import datetime
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
+from PyQt5.QtCore import QDate, QTime, QDateTime
 
 conn = sqlite3.connect('task_buddy.db')
 c = conn.cursor()
-c.execute("""CREATE TABLE if not exists completed_tasks(
+c.execute("""CREATE TABLE if not exists todo_list(
     list_item text
     row_id int
+    )""")
+c.execute("""CREATE TABLE if not exists completed_tasks(
+    task text
+    date_of_completion text
+    time_of_completion text
+    row_id int   
     )""")
 conn.commit()
 conn.close()
@@ -111,8 +120,23 @@ class Ui_MainWindow(object):
     def open_completed_tasks(self):
         self.completedwindow = SecondWindow()
         self.completedwindow.show()
-        
-
+    '''def done(self,state):
+        if state == 2:
+            clicked_item = self.task_list.currentItem()
+            task = self.checkbox_item.text()
+            current_datetime = QDateTime.currentDateTime()
+            deletion_date = current_datetime.date().toString("yyyy-MM-dd")
+            deletion_time = current_datetime.time().toString("hh:mm:ss")
+            db_manager = DatabaseManager()
+            db_manager.insert_into_completed_tasks(self,task,deletion_date,deletion_time,clicked_item)
+            self.task_list.takeItem(self.task_list.row(clicked_item))
+            
+            
+            conn = sqlite3.connect('task_buddy.db')
+            c = conn.cursor()'''
+            
+            
+            
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
