@@ -64,7 +64,7 @@
      <widget class="QFrame" name="frame_2">
       <property name="geometry">
        <rect>
-        <x>325</x>
+        <x>190</x>
         <y>0</y>
         <width>451</width>
         <height>111</height>
@@ -95,9 +95,9 @@
      <widget class="QTableWidget" name="complete_table">
       <property name="geometry">
        <rect>
-        <x>50</x>
+        <x>30</x>
         <y>120</y>
-        <width>721</width>
+        <width>771</width>
         <height>491</height>
        </rect>
       </property>
@@ -110,7 +110,50 @@
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true"> background-color: transparent;</string>
+       <string notr="true">QTableWidget {
+    background-color: black;
+    color: white;
+    selection-background-color: #007BFF; /* Highlight color when a row is selected */
+}
+
+QHeaderView::section {
+    background-color: #007BFF; /* Header background color */
+    color: white;
+    padding: 4px;
+    border: 1px solid #666666;
+}
+
+QTableWidget QTableCornerButton::section {
+    background-color: #007BFF; /* Top-left corner background color */
+    border: 1px solid #666666;
+}
+
+QScrollBar:vertical {
+    border: 1px solid #666666;
+    background: black;
+    width: 10px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #007BFF;
+    min-height: 0px;
+}
+
+QScrollBar::add-line:vertical {
+    background: black;
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    background: black;
+    height: 0 px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+</string>
       </property>
       <property name="dragEnabled">
        <bool>false</bool>
@@ -177,9 +220,9 @@
       <property name="geometry">
        <rect>
         <x>800</x>
-        <y>270</y>
+        <y>90</y>
         <width>241</width>
-        <height>341</height>
+        <height>541</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -190,7 +233,45 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="clear_2">
+        <widget class="QPushButton" name="refresh">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s;
+}</string>
+         </property>
+         <property name="text">
+          <string>  Refresh</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/refresh.png</normaloff>../resources/refresh.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>60</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="restore">
          <property name="font">
           <font>
            <family>Trebuchet MS</family>
@@ -304,22 +385,6 @@ QPushButton:hover {
         </widget>
        </item>
       </layout>
-     </widget>
-     <widget class="QFrame" name="frame_4">
-      <property name="geometry">
-       <rect>
-        <x>800</x>
-        <y>120</y>
-        <width>241</width>
-        <height>151</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
      </widget>
     </widget>
    </widget>

@@ -54,6 +54,12 @@ class DatabaseManager:
         self.c.execute('SELECT * FROM todo_list')
         return self.c.fetchall()
 
+    def fetch_all_completed_tasks(self):
+        self.conn = sqlite3.connect('task_buddy.db')
+        self.c = self.conn.cursor()
+        self.c.execute('SELECT * FROM completed_tasks')
+        return self.c.fetchall()
+
     def add_task(self, task_text):
         self.conn = sqlite3.connect('task_buddy.db')
         self.c = self.conn.cursor()
@@ -61,6 +67,12 @@ class DatabaseManager:
         row_count = self.c.fetchone()[0] or 0
         data_to_insert = [(task_text, row_count + 1)]
         insert_query = "INSERT INTO todo_list (list_item, row_id) VALUES (?, ?)"
+        self.c.executemany(insert_query, data_to_insert)
+        self.conn.commit()
+
+    def add_completed_task(self, task_text, date_of_completion, time_of_completion, row_id):
+        data_to_insert = [(task_text, date_of_completion, time_of_completion, row_id)]
+        insert_query = "INSERT INTO completed_tasks (task, date_of_completion, time_of_completion, row_id) VALUES (?, ?, ?, ?)"
         self.c.executemany(insert_query, data_to_insert)
         self.conn.commit()
 
@@ -73,6 +85,9 @@ class DatabaseManager:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         uic.loadUi("ui/todolistgui.ui", self)
+        MainWindow.setFixedSize(MainWindow.size())  # Set fixed size
+        MainWindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)  # Keep close and minimize buttons
+        MainWindow.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)  # Disable maximize button
         self.delete_2.clicked.connect(self.delete_task)
         self.Settings_2.clicked.connect(self.open_settings_dialog)
         self.Create_task.clicked.connect(self.add_task)
@@ -82,12 +97,30 @@ class Ui_MainWindow(object):
     def open_settings_dialog(self):
         self.todosettings = QDialog()
         uic.loadUi("ui/todosettings.ui", self.todosettings)
+        self.todosettings.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.Dialog | QtCore.Qt.WindowMinimizeButtonHint)  # Keep close and minimize buttons
+        self.todosettings.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)  # Disable maximize button
         self.todosettings.show()
 
     def open_completed_tasks(self):
         self.completedwindow = QMainWindow()
-        self.completed_ui = uic.loadUi("ui/finishedassignments.ui", self.completedwindow)
-        self.completed_ui.show()
+        uic.loadUi("ui/finishedassignments.ui", self.completedwindow)
+        self.completedwindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.Dialog | QtCore.Qt.WindowMinimizeButtonHint)  # Keep close and minimize buttons
+        self.completedwindow.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)  # Disable maximize button
+        self.populate_completed_tasks_table()
+        self.completedwindow.show()
+
+    def populate_completed_tasks_table(self):
+        completed_tasks = db_manager.fetch_all_completed_tasks()
+        table = self.completedwindow.findChild(QTableWidget, 'complete_table')  # Assuming the QTableWidget has the object name 'complete_table'
+
+        if table:
+            table.setRowCount(len(completed_tasks))
+            table.setColumnCount(3)  # Assuming there are three columns in your table
+
+            for row, task_data in enumerate(completed_tasks):
+                for col, value in enumerate(task_data):
+                    item = QTableWidgetItem(str(value))
+                    table.setItem(row, col, item)
 
     def graball(self):
         records = db_manager.fetch_all_tasks()
