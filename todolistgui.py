@@ -1,29 +1,44 @@
 import sys
 from PyQt5.QtWidgets import *
-from PyQt5 import uic, QtCore, QtGui
+from PyQt5 import uic, QtGui, QtCore
 from plyer import notification
 import sqlite3
-from completed import SecondWindow
-from todosettings import todoSettings
-import datetime
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
-from PyQt5.QtCore import QDate, QTime, QDateTime
+from PyQt5.QtCore import QTimer
 
-conn = sqlite3.connect('task_buddy.db')
-c = conn.cursor()
-c.execute("""CREATE TABLE if not exists todo_list(
-    list_item text
-    row_id int
-    )""")
-c.execute("""CREATE TABLE if not exists completed_tasks(
-    task text
-    date_of_completion text
-    time_of_completion text
-    row_id int
-    )""")
-conn.commit()
-conn.close()
+db_manager = None
 
+def create_database():
+    global db_manager
+    conn = sqlite3.connect('task_buddy.db')
+    c = conn.cursor()
+    c.execute("""CREATE TABLE if not exists todo_list(
+        list_item text,
+        row_id int
+        )""")
+    c.execute("""CREATE TABLE if not exists completed_tasks(
+        task text,
+        date_of_completion text,
+        time_of_completion text,
+        row_id int
+        )""")
+    conn.commit()
+    conn.close()
+
+    db_manager = DatabaseManager()
+
+def send_notification():
+    records = db_manager.fetch_all_tasks()
+    if records:
+        notification_title = "Reminder"
+        notification_message = "Don't forget to check your tasks!"
+        notification.notify(
+            title=notification_title,
+            message=notification_message,
+            app_icon="resources/todo.png",
+            timeout=10,
+        )
+        # Play notification sound
+        QtGui.QSound("resources/notify.wav").play()
 
 class DatabaseManager:
     def __init__(self):
@@ -55,7 +70,6 @@ class DatabaseManager:
         self.c.execute("DELETE FROM todo_list WHERE row_id = ?", (row_id,))
         self.conn.commit()
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         uic.loadUi("ui/todolistgui.ui", self)
@@ -66,13 +80,17 @@ class Ui_MainWindow(object):
         self.graball()
 
     def open_settings_dialog(self):
-         self.todosettings = todoSettings()
-         self.todosettings.show()
+        self.todosettings = QDialog()
+        uic.loadUi("ui/todosettings.ui", self.todosettings)
+        self.todosettings.show()
+
+    def open_completed_tasks(self):
+        self.completedwindow = QMainWindow()
+        self.completed_ui = uic.loadUi("ui/finishedassignments.ui", self.completedwindow)
+        self.completed_ui.show()
 
     def graball(self):
-        db_manager = DatabaseManager()
         records = db_manager.fetch_all_tasks()
-        db_manager.close_connection()
         self.task_list.clear()
 
         for record in records:
@@ -88,10 +106,7 @@ class Ui_MainWindow(object):
         task_text = self.task_input.text()
 
         if task_text:
-            db_manager = DatabaseManager()
             db_manager.add_task(task_text)
-            db_manager.close_connection()
-
             item = QListWidgetItem()
             checkbox_item = QCheckBox(task_text)
             checkbox_item.row_id = db_manager.fetch_all_tasks()[-1][1]  # Fetch the latest row_id
@@ -113,29 +128,8 @@ class Ui_MainWindow(object):
 
             if result == QMessageBox.Yes:
                 clicked_checkbox = self.task_list.itemWidget(clicked_item)
-                db_manager = DatabaseManager()
                 db_manager.delete_task(clicked_checkbox.row_id)
-                db_manager.close_connection()
                 self.task_list.takeItem(self.task_list.row(clicked_item))
-    def open_completed_tasks(self):
-        self.completedwindow = SecondWindow()
-        self.completedwindow.show()
-    '''def done(self,state):
-        if state == 2:
-            clicked_item = self.task_list.currentItem()
-            task = self.checkbox_item.text()
-            current_datetime = QDateTime.currentDateTime()
-            deletion_date = current_datetime.date().toString("yyyy-MM-dd")
-            deletion_time = current_datetime.time().toString("hh:mm:ss")
-            db_manager = DatabaseManager()
-            db_manager.insert_into_completed_tasks(self,task,deletion_date,deletion_time,clicked_item)
-            self.task_list.takeItem(self.task_list.row(clicked_item))
-
-
-            conn = sqlite3.connect('task_buddy.db')
-            c = conn.cursor()'''
-
-
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -143,8 +137,6 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setup_animations()
         self.setWindowIcon(QtGui.QIcon("resources/todo.png"))
-        self.create_tray_icon()
-        #self.minimizeButton.clicked.connect(self.minimize_to_system_tray)
         self.schedule_notifications()
 
     def setup_animations(self):
@@ -154,48 +146,12 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.fade_in_animation.setDuration(500)
         self.fade_in_animation.start()
 
-    def create_tray_icon(self):
-        self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QtGui.QIcon("resources/todo.png"))
-        show_action = QAction("Show", self)
-        show_action.triggered.connect(self.show_window)
-        quit_action = QAction("Quit", self)
-        quit_action.triggered.connect(self.close)
-        tray_menu = QMenu()
-        tray_menu.addAction(show_action)
-        tray_menu.addAction(quit_action)
-        self.tray_icon.setContextMenu(tray_menu)
-        self.tray_icon.show()
-
-    def show_window(self):
-        self.showNormal()
-        self.activateWindow()
-
-    def minimize_to_system_tray(self):
-        self.hide()
-
     def schedule_notifications(self):
         notification_interval = 5 * 60 * 60  # 5 hours in seconds
-        QtCore.QTimer.singleShot(notification_interval * 1000, self.send_notification)
-
-    def send_notification(self):
-        db_manager = DatabaseManager()
-        records = db_manager.fetch_all_tasks()
-        db_manager.close_connection()
-
-        if records:
-            notification_title = "Reminder"
-            notification_message = "Don't forget to check your tasks!"
-            notification.notify(
-                title=notification_title,
-                message=notification_message,
-                app_icon="resources/todo.png",
-                timeout=10,
-            )
-            # Play notification sound
-            QtGui.QSound("resources/notify.wav").play()
+        QTimer.singleShot(notification_interval * 1000, send_notification)
 
 if __name__ == "__main__":
+    create_database()
     app = QApplication(sys.argv)
     window = MyMainWindow()
     window.show()
