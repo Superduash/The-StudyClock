@@ -1,7 +1,7 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <widget class="QDialog" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,15 @@
   <property name="windowTitle">
    <string>Settings - Task Buddy</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>347</height>
+    </rect>
+   </property>
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
@@ -51,7 +59,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>../resources/bg.jpg</pixmap>
+       <pixmap>resources/bg.jpg</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -155,7 +163,7 @@ QPushButton:hover {
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../resources/save.png</normaloff>../resources/save.png</iconset>
+        <normaloff>resources/save.png</normaloff>resources/save.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -199,7 +207,7 @@ QPushButton:hover {
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../resources/cancel.png</normaloff>../resources/cancel.png</iconset>
+        <normaloff>resources/cancel.png</normaloff>resources/cancel.png</iconset>
       </property>
       <property name="iconSize">
        <size>

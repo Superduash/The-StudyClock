@@ -4,6 +4,7 @@ from PyQt5 import uic, QtCore, QtGui
 from plyer import notification
 import sqlite3
 from completed import SecondWindow
+from todosettings import todoSettings
 
 
 
@@ -43,15 +44,14 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         uic.loadUi("ui/todolistgui.ui", self)
         self.delete_2.clicked.connect(self.delete_task)
-        self.Settings.clicked.connect(self.open_settings_dialog)
+        self.Settings_2.clicked.connect(self.open_settings_dialog)
         self.Create_task.clicked.connect(self.add_task)
         self.Completed.clicked.connect(self.open_completed_tasks)
         self.graball()
         
     def open_settings_dialog(self):
-        settings_dialog = QDialog(self)
-        uic.loadUi("ui/todosettings.ui", settings_dialog)
-        settings_dialog.exec_()
+         self.todosettings = todoSettings()
+         self.todosettings.show()
 
     def graball(self):
         db_manager = DatabaseManager()
@@ -104,6 +104,7 @@ class Ui_MainWindow(object):
     def open_completed_tasks(self):
         self.completedwindow = SecondWindow()
         self.completedwindow.show()
+        
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
