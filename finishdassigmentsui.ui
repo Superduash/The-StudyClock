@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="completed_MainWindow">
+ <class>completed_MainWindow</class>
+ <widget class="QDialog" name="completed_MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,15 @@
    <iconset>
     <normaloff>../resources/tick.png</normaloff>../resources/tick.png</iconset>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1085</width>
+     <height>650</height>
+    </rect>
+   </property>
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
@@ -55,7 +63,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>../resources/bg.jpg</pixmap>
+       <pixmap>resources/bg.jpg</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -83,7 +91,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../resources/finished_assignments.png</pixmap>
+          <pixmap>resources/finished_assignments.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -97,7 +105,7 @@
        <rect>
         <x>50</x>
         <y>140</y>
-        <width>651</width>
+        <width>660</width>
         <height>471</height>
        </rect>
       </property>
@@ -119,7 +127,7 @@
        <enum>QAbstractItemView::DragDrop</enum>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>180</number>
+       <number>220</number>
       </attribute>
       <column>
        <property name="text">
@@ -170,13 +178,13 @@
        </property>
       </column>
      </widget>
-     <widget class="QPushButton" name="delete_2">
+     <widget class="QPushButton" name="pushButton">
       <property name="geometry">
        <rect>
-        <x>800</x>
+        <x>720</x>
         <y>330</y>
-        <width>201</width>
-        <height>71</height>
+        <width>249</width>
+        <height>55</height>
        </rect>
       </property>
       <property name="font">
@@ -201,16 +209,50 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string> Delete Task</string>
+       <string>Clear Table </string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delete_3">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>240</y>
+        <width>247</width>
+        <height>55</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>14</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s;
+}</string>
+      </property>
+      <property name="text">
+       <string>  Delete Task</string>
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../resources/deleteic.png</normaloff>../resources/deleteic.png</iconset>
+        <normaloff>resources/deleteic.png</normaloff>resources/deleteic.png</iconset>
       </property>
       <property name="iconSize">
        <size>
         <width>35</width>
-        <height>35</height>
+        <height>51</height>
        </size>
       </property>
      </widget>
