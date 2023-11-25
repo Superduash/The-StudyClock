@@ -4,6 +4,7 @@ from PyQt5 import uic, QtGui, QtCore
 from plyer import notification
 import sqlite3
 from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QDate, QTime, QDateTime
 
 db_manager = None
 
@@ -88,6 +89,19 @@ class Ui_MainWindow(object):
         self.completedwindow = QMainWindow()
         self.completed_ui = uic.loadUi("ui/finishedassignments.ui", self.completedwindow)
         self.completed_ui.show()
+        
+    def checkbox_clicked(self):
+        clicked_checkbox = self.sender()
+        task = clicked_checkbox.text()
+        current_datetime = QDateTime.currentDateTime()
+        deletion_date = current_datetime.date().toString("yyyy-MM-dd")
+        deletion_time = current_datetime.time().toString("hh:mm:ss")
+        
+        
+        if clicked_checkbox.isChecked():
+            item = self.task_list.itemAt(clicked_checkbox.pos())
+            db_manager.delete_task(clicked_checkbox.row_id)
+            self.task_list.takeItem(self.task_list.row(item))
 
     def graball(self):
         records = db_manager.fetch_all_tasks()
@@ -97,6 +111,7 @@ class Ui_MainWindow(object):
             task_text, row_id = record
             item = QListWidgetItem()
             checkbox_item = QCheckBox(task_text)
+            checkbox_item.clicked.connect(self.checkbox_clicked)
             checkbox_item.row_id = row_id  # Store the row_id in the checkbox item
             item.setSizeHint(checkbox_item.sizeHint())
             self.task_list.addItem(item)
@@ -109,6 +124,7 @@ class Ui_MainWindow(object):
             db_manager.add_task(task_text)
             item = QListWidgetItem()
             checkbox_item = QCheckBox(task_text)
+            checkbox_item.clicked.connect(self.checkbox_clicked)
             checkbox_item.row_id = db_manager.fetch_all_tasks()[-1][1]  # Fetch the latest row_id
             item.setSizeHint(checkbox_item.sizeHint())
             self.task_list.addItem(item)
