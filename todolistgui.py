@@ -4,7 +4,6 @@ from PyQt5 import uic, QtGui, QtCore
 from plyer import notification
 import sqlite3
 from PyQt5.QtCore import QTimer
-from PyQt5.QtCore import QDate, QTime, QDateTime
 
 db_manager = None
 
@@ -104,8 +103,24 @@ class Ui_MainWindow(object):
 
     def open_completed_tasks(self):
         self.completedwindow = QMainWindow()
-        self.completed_ui = uic.loadUi("ui/finishedassignments.ui", self.completedwindow)
-        self.completed_ui.show()
+        uic.loadUi("ui/finishedassignments.ui", self.completedwindow)
+        self.completedwindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.Dialog | QtCore.Qt.WindowMinimizeButtonHint)  # Keep close and minimize buttons
+        self.completedwindow.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)  # Disable maximize button
+        self.populate_completed_tasks_table()
+        self.completedwindow.show()
+
+    def populate_completed_tasks_table(self):
+        completed_tasks = db_manager.fetch_all_completed_tasks()
+        table = self.completedwindow.findChild(QTableWidget, 'complete_table')  # Assuming the QTableWidget has the object name 'complete_table'
+
+        if table:
+            table.setRowCount(len(completed_tasks))
+            table.setColumnCount(3)  # Assuming there are three columns in your table
+
+            for row, task_data in enumerate(completed_tasks):
+                for col, value in enumerate(task_data):
+                    item = QTableWidgetItem(str(value))
+                    table.setItem(row, col, item)
 
     def graball(self):
         records = db_manager.fetch_all_tasks()
@@ -115,7 +130,6 @@ class Ui_MainWindow(object):
             task_text, row_id = record
             item = QListWidgetItem()
             checkbox_item = QCheckBox(task_text)
-            checkbox_item.clicked.connect(self.checkbox_clicked)
             checkbox_item.row_id = row_id  # Store the row_id in the checkbox item
             item.setSizeHint(checkbox_item.sizeHint())
             self.task_list.addItem(item)
@@ -128,7 +142,6 @@ class Ui_MainWindow(object):
             db_manager.add_task(task_text)
             item = QListWidgetItem()
             checkbox_item = QCheckBox(task_text)
-            checkbox_item.clicked.connect(self.checkbox_clicked)
             checkbox_item.row_id = db_manager.fetch_all_tasks()[-1][1]  # Fetch the latest row_id
             item.setSizeHint(checkbox_item.sizeHint())
             self.task_list.addItem(item)
