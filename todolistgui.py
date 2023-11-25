@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
                 for col, value in enumerate(task_data):
                     item = QTableWidgetItem(str(value))
                     table.setItem(row, col, item)
-                    
+
     def checkbox_clicked(self):
         clicked_checkbox = self.sender()
         task = clicked_checkbox.text()
