@@ -10,3 +10,4 @@ class todoSettings(QDialog):
 
         # Load the UI file
         uic.loadUi('todosettings.ui', self)
+        

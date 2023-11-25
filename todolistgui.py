@@ -6,7 +6,14 @@ import sqlite3
 from completed import SecondWindow
 from todosettings import todoSettings
 
-
+conn = sqlite3.connect('task_buddy.db')
+c = conn.cursor()
+c.execute("""CREATE TABLE if not exists completed_tasks(
+    list_item text
+    row_id int
+    )""")
+conn.commit()
+conn.close()
 
 
 class DatabaseManager:
