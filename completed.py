@@ -1,20 +1,12 @@
 import sys
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from datetime import datetime, timedelta
-from PyQt5.QtMultimedia import QSoundEffect
-from completedtasksui import Ui_MainWindow
+from PyQt5 import uic, QtCore, QtGui
+from plyer import notification
+import sqlite3
 
-class MyMainWindow(QMainWindow, Ui_MainWindow):
+class SecondWindow(QDialog):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
 
-        # Connect signals and slots or perform additional setup here
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MyMainWindow()
-    window.show()
-    sys.exit(app.exec_())
+        # Load the UI file
+        uic.loadUi('finishdassigmentsui.ui', self)
