@@ -38,7 +38,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="bg">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -51,7 +51,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>../The-StudyClock/resources/bg.jpg</pixmap>
+       <pixmap>../resources/bg.jpg</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -282,28 +282,28 @@ QPushButton:hover {
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="timer">
        <property name="geometry">
         <rect>
-         <x>90</x>
+         <x>80</x>
          <y>50</y>
-         <width>421</width>
+         <width>531</width>
          <height>151</height>
         </rect>
        </property>
        <property name="font">
         <font>
          <family>Trebuchet MS</family>
-         <pointsize>72</pointsize>
+         <pointsize>60</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>00 : 00</string>
+        <string>00:00:00</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="mode_selected">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -324,7 +324,7 @@ QPushButton:hover {
         <string>Mode Selected : </string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="mode">
        <property name="geometry">
         <rect>
          <x>320</x>
@@ -346,12 +346,12 @@ QPushButton:hover {
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton_5">
+     <widget class="QPushButton" name="start">
       <property name="geometry">
        <rect>
         <x>410</x>
         <y>330</y>
-        <width>171</width>
+        <width>221</width>
         <height>61</height>
        </rect>
       </property>
@@ -380,12 +380,12 @@ QPushButton:hover {
        <string>Start</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_6">
+     <widget class="QPushButton" name="pause">
       <property name="geometry">
        <rect>
-        <x>690</x>
+        <x>640</x>
         <y>330</y>
-        <width>171</width>
+        <width>221</width>
         <height>61</height>
        </rect>
       </property>
@@ -411,17 +411,25 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>Pause</string>
+       <string>Pause/Resume</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_7">
+     <widget class="QPushButton" name="reset">
       <property name="geometry">
        <rect>
         <x>410</x>
         <y>420</y>
-        <width>171</width>
+        <width>221</width>
         <height>61</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>18</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="styleSheet">
        <string notr="true">QPushButton {
@@ -437,15 +445,15 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string>Reset</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_8">
+     <widget class="QPushButton" name="minimize">
       <property name="geometry">
        <rect>
-        <x>690</x>
+        <x>640</x>
         <y>420</y>
-        <width>171</width>
+        <width>221</width>
         <height>61</height>
        </rect>
       </property>
