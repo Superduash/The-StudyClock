@@ -3,6 +3,9 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtCore, QtGui
 from plyer import notification
 import sqlite3
+from completed_tasks import Ui_MainWindow1
+
+
 
 
 class DatabaseManager:
@@ -42,6 +45,7 @@ class Ui_MainWindow(object):
         self.delete_2.clicked.connect(self.delete_task)
         self.Settings.clicked.connect(self.open_settings_dialog)
         self.Create_task.clicked.connect(self.add_task)
+        self.Completed.clicked.connect(self.open_completed_tasks)
         self.graball()
         
     def open_settings_dialog(self):
@@ -97,6 +101,9 @@ class Ui_MainWindow(object):
                 db_manager.delete_task(clicked_checkbox.row_id)
                 db_manager.close_connection()
                 self.task_list.takeItem(self.task_list.row(clicked_item))
+    def open_completed_tasks(self):
+        self.completedwindow = Ui_MainWindow1()
+        self.completedwindow.show()
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
