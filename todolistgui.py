@@ -3,8 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui, QtCore
 from plyer import notification
 import sqlite3
-from PyQt5.QtCore import QTimer
-from PyQt5.QtCore import QDate, QTime, QDateTime
+from PyQt5.QtCore import QTimer, QDateTime
 
 db_manager = None
 
@@ -78,10 +77,31 @@ class DatabaseManager:
         self.conn.commit()
 
     def delete_task(self, row_id):
-        self.conn = sqlite3.connect('task_buddy.db')
-        self.c = self.conn.cursor()
-        self.c.execute("DELETE FROM todo_list WHERE row_id = ?", (row_id,))
-        self.conn.commit()
+        try:
+            self.conn = sqlite3.connect('task_buddy.db')
+            self.c = self.conn.cursor()
+            self.c.execute("DELETE FROM todo_list WHERE row_id = ?", (row_id,))
+            self.conn.commit()
+        except Exception as e:
+            print(f"Error deleting task: {e}")
+
+    def delete_completed_task(self, row_id):
+        try:
+            self.conn = sqlite3.connect('task_buddy.db')
+            self.c = self.conn.cursor()
+            self.c.execute("DELETE FROM completed_tasks WHERE row_id = ?", (row_id,))
+            self.conn.commit()
+        except Exception as e:
+            print(f"Error deleting completed task: {e}")
+
+    def clear_completed_tasks(self):
+        try:
+            self.conn = sqlite3.connect('task_buddy.db')
+            self.c = self.conn.cursor()
+            self.c.execute("DELETE FROM completed_tasks")
+            self.conn.commit()
+        except Exception as e:
+            print(f"Error clearing completed tasks: {e}")
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -107,21 +127,100 @@ class Ui_MainWindow(object):
         uic.loadUi("ui/finishedassignments.ui", self.completedwindow)
         self.completedwindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.Dialog | QtCore.Qt.WindowMinimizeButtonHint)  # Keep close and minimize buttons
         self.completedwindow.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)  # Disable maximize button
-        self.populate_completed_tasks_table()
+        self.completed_tasks_table()
         self.completedwindow.show()
 
-    def populate_completed_tasks_table(self):
+    def completed_tasks_table(self):
         completed_tasks = db_manager.fetch_all_completed_tasks()
-        table = self.completedwindow.findChild(QTableWidget, 'complete_table')  # Assuming the QTableWidget has the object name 'complete_table'
+        table = self.completedwindow.findChild(QTableWidget, 'complete_table')
 
         if table:
             table.setRowCount(len(completed_tasks))
-            table.setColumnCount(3)  # Assuming there are three columns in your table
+            table.setColumnCount(4)  # Assuming there are four columns in your table
+
+            # Set the selection behavior to select entire rows
+            table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
             for row, task_data in enumerate(completed_tasks):
                 for col, value in enumerate(task_data):
                     item = QTableWidgetItem(str(value))
                     table.setItem(row, col, item)
+                    if col == 3:
+                        item.row_id = int(value)
+
+            refresh_button = self.completedwindow.findChild(QPushButton, 'refresh')
+            restore_button = self.completedwindow.findChild(QPushButton, 'restore')
+            delete_button = self.completedwindow.findChild(QPushButton, 'delete_2')
+            clear_button = self.completedwindow.findChild(QPushButton, 'clear')
+
+            refresh_button.clicked.connect(self.refresh_completed_tasks)
+            restore_button.clicked.connect(self.restore_completed_task)
+            delete_button.clicked.connect(self.delete_completed_task)
+            clear_button.clicked.connect(self.clear_completed_tasks)
+
+    # Modify the delete_completed_task method in Ui_MainWindow class
+    # Modify the delete_completed_task method in Ui_MainWindow class
+    def delete_completed_task(self):
+        table = self.completedwindow.findChild(QTableWidget, 'complete_table')
+        selected_rows = set(index.row() for index in table.selectedIndexes())
+
+        # Sort the selected rows in descending order
+        selected_rows = sorted(selected_rows, reverse=True)
+
+        for selected_row in selected_rows:
+            try:
+                row_id_item = table.item(selected_row, 3)  # Assuming row_id is in the fourth column
+                if row_id_item:
+                    row_id = int(row_id_item.text())
+                    print(f"Deleting completed task with ID: {row_id}")
+                    db_manager.delete_completed_task(row_id)
+            except Exception as e:
+                print(f"Error deleting completed task: {e}")
+
+        self.completed_tasks_table()  # Refresh the table after deletion
+
+
+    def refresh_completed_tasks(self):
+        self.completed_tasks_table()
+
+    def restore_completed_task(self):
+        table = self.completedwindow.findChild(QTableWidget, 'complete_table')
+        selected_row = table.currentRow()
+
+        if selected_row >= 0:
+            row_id_item = table.item(selected_row, 3)  # Assuming row_id is in the fourth column
+            if row_id_item is not None:
+                row_id = int(row_id_item.text())
+                task_text_item = table.item(selected_row, 0)  # Assuming task text is in the first column
+                if task_text_item is not None:
+                    task_text = task_text_item.text()
+                    current_datetime = QDateTime.currentDateTime()
+                    date_of_completion = current_datetime.date().toString("yyyy-MM-dd")
+                    time_of_completion = current_datetime.time().toString("hh:mm:ss")
+
+                    try:
+                        # Use a single transaction to delete and insert records
+                        db_manager.conn.execute("BEGIN TRANSACTION")
+                        db_manager.c.execute("DELETE FROM completed_tasks WHERE row_id = ?", (row_id,))
+                        db_manager.add_completed_task(task_text, date_of_completion, time_of_completion, row_id)
+                        db_manager.conn.execute("COMMIT")
+
+                        self.completed_tasks_table()
+                    except Exception as e:
+                        db_manager.conn.execute("ROLLBACK")
+                        print(f"Error restoring completed task: {e}")
+                else:
+                    print("Unable to retrieve task text item.")
+            else:
+                print("Unable to retrieve row ID item.")
+
+    def clear_completed_tasks(self):
+        try:
+            # Add logic to clear completed tasks
+            db_manager.clear_completed_tasks()
+            self.completed_tasks_table()
+        except Exception as e:
+            print(f"Error clearing completed tasks: {e}")
 
     def checkbox_clicked(self):
         clicked_checkbox = self.sender()
@@ -133,10 +232,10 @@ class Ui_MainWindow(object):
         print(clicked_item)
         if clicked_checkbox.isChecked():
             query = "INSERT INTO completed_tasks (task, date_of_completion, time_of_completion, row_id) VALUES (?, ?, ?, ?)"
-            data_to_insert = [(task,deletion_date,deletion_time,clicked_item)]
+            data_to_insert = [(task, deletion_date, deletion_time, clicked_item)]
             conn = sqlite3.connect('task_buddy.db')
             c = conn.cursor()
-            c.executemany(query,data_to_insert)
+            c.executemany(query, data_to_insert)
             conn.commit()
             conn.close()
             print("success")
