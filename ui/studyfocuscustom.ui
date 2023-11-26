@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Study Focus Settings</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../resources/hehe.png</normaloff>../resources/hehe.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="widget" native="true">
@@ -60,9 +64,9 @@
      <widget class="QLabel" name="Custom_timer_settings">
       <property name="geometry">
        <rect>
-        <x>120</x>
+        <x>60</x>
         <y>10</y>
-        <width>401</width>
+        <width>501</width>
         <height>81</height>
        </rect>
       </property>
@@ -74,14 +78,25 @@
         <bold>true</bold>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+</string>
+      </property>
       <property name="text">
-       <string>Custom Timer Settings</string>
+       <string>       Custom Timer Settings</string>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QLabel" name="length_of_session_label">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>90</y>
         <width>271</width>
         <height>71</height>
@@ -127,7 +142,7 @@
       <property name="geometry">
        <rect>
         <x>330</x>
-        <y>110</y>
+        <y>105</y>
         <width>181</width>
         <height>41</height>
        </rect>
@@ -139,7 +154,7 @@
      <widget class="QLabel" name="length_of_break_label">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>30</x>
         <y>160</y>
         <width>281</width>
         <height>61</height>
@@ -201,7 +216,36 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>Done</string>
+       <string>  Done</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../resources/tick.png</normaloff>../resources/tick.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>35</width>
+        <height>40</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>75</x>
+        <y>20</y>
+        <width>61</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap>../resources/study-time.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>

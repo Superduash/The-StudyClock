@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from datetime import timedelta, datetime
@@ -34,6 +35,11 @@ class OutlinedLabel(QLabel):
 class TimerApp(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")
+        self.fade_in_animation.setStartValue(0)
+        self.fade_in_animation.setEndValue(1)
+        self.fade_in_animation.setDuration(500)
+        self.fade_in_animation.start()
 
         desktop = QDesktopWidget()
         screen_rect = desktop.availableGeometry()
@@ -117,7 +123,7 @@ class TimerApp(QMainWindow):
     def start_timer(self):
         if not self.timer.isActive() and not self.paused:
             self.start_time = datetime.now()
-            self.timer.start(20) 
+            self.timer.start(20)
             self.start_button.setEnabled(False)
 
     def reset_timer(self):
@@ -200,5 +206,6 @@ class TimerApp(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     timer_app = TimerApp()
+    timer_app.setWindowOpacity(0)
     timer_app.show()
     sys.exit(app.exec_())

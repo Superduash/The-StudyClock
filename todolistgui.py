@@ -3,11 +3,11 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui, QtCore
 from plyer import notification
 import sqlite3
-from PyQt5.QtCore import QTimer, QDateTime
+from PyQt5.QtCore import QTimer, QDateTime, QSize, QUrl, QThread, pyqtSignal
+from PyQt5.QtMultimedia import QSoundEffect
 
 db_manager = None
 trash_bin = []
-
 
 def create_database():
     global db_manager
@@ -15,8 +15,8 @@ def create_database():
     c = conn.cursor()
     c.execute("""CREATE TABLE if not exists todo_list(
         list_item text,
-        row_id int,
-        due_datetime text
+        datetime_created text,
+        row_id int
         )""")
     c.execute("""CREATE TABLE if not exists completed_tasks(
         task text,
@@ -28,22 +28,6 @@ def create_database():
     conn.close()
 
     db_manager = DatabaseManager()
-
-
-def send_notification():
-    records = db_manager.fetch_all_tasks()
-    if records:
-        notification_title = "Reminder"
-        notification_message = "Don't forget to check your tasks!"
-        notification.notify(
-            title=notification_title,
-            message=notification_message,
-            app_icon="resources/todo.png",
-            timeout=10,
-        )
-        QtGui.QSound("resources/notify.wav").play()
-
-
 class DatabaseManager:
     def __init__(self):
         self.conn = sqlite3.connect('task_buddy.db')
@@ -53,27 +37,24 @@ class DatabaseManager:
         self.conn.close()
 
     def fetch_all_tasks(self):
-        self.conn = sqlite3.connect('task_buddy.db')
-        self.c = self.conn.cursor()
         self.c.execute('SELECT * FROM todo_list')
-        return self.c.fetchall()
+        records = self.c.fetchall()
+        return records
 
     def fetch_all_completed_tasks(self):
-        self.conn = sqlite3.connect('task_buddy.db')
-        self.c = self.conn.cursor()
         self.c.execute('SELECT * FROM completed_tasks')
         return self.c.fetchall()
 
-    def add_task(self, task_text, due_datetime=None):
-        self.conn = sqlite3.connect('task_buddy.db')
-        self.c = self.conn.cursor()
+    def add_task(self, task_text):
+        current_datetime = QDateTime.currentDateTime()
+        creation_date = current_datetime.toString("yyyy-MM-dd hh:mm:ss")
+
         self.c.execute('SELECT MAX(row_id) FROM todo_list')
         row_count = self.c.fetchone()[0] or 0
-        data_to_insert = [(task_text, row_count + 1, due_datetime)]
-        insert_query = "INSERT INTO todo_list (list_item, row_id, due_datetime) VALUES (?, ?, ?)"
+        data_to_insert = [(task_text, creation_date, row_count + 1)]
+        insert_query = "INSERT INTO todo_list (list_item, datetime_created, row_id) VALUES (?, ?, ?)"
         self.c.executemany(insert_query, data_to_insert)
         self.conn.commit()
-
 
     def add_completed_task(self, task_text, date_of_completion, time_of_completion, row_id):
         data_to_insert = [(task_text, date_of_completion, time_of_completion, row_id)]
@@ -82,8 +63,6 @@ class DatabaseManager:
         self.conn.commit()
 
     def delete_task(self, row_id):
-        self.conn = sqlite3.connect('task_buddy.db')
-        self.c = self.conn.cursor()
         self.c.execute("DELETE FROM todo_list WHERE row_id = ?", (row_id,))
         self.conn.commit()
 
@@ -91,14 +70,10 @@ class DatabaseManager:
         completed_tasks = self.fetch_all_completed_tasks()
         trash_bin.extend(completed_tasks)
 
-        self.conn = sqlite3.connect('task_buddy.db')
-        self.c = self.conn.cursor()
         self.c.execute("DELETE FROM completed_tasks")
         self.conn.commit()
 
     def undo_clear_completed_tasks(self):
-        self.conn = sqlite3.connect('task_buddy.db')
-        self.c = self.conn.cursor()
         for task_data in trash_bin:
             insert_query = "INSERT INTO completed_tasks (task, date_of_completion, time_of_completion, row_id) VALUES (?, ?, ?, ?)"
             self.c.executemany(insert_query, [task_data])
@@ -108,7 +83,7 @@ class DatabaseManager:
 
 
 class SystemTrayIcon(QSystemTrayIcon):
-    def __init__(self, icon, parent=None):
+    def __init__(self, icon, task_list, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
         self.setToolTip("Task Buddy")
         menu = QMenu(parent)
@@ -127,30 +102,33 @@ class SystemTrayIcon(QSystemTrayIcon):
     def minimize_app(self):
         window.hide()
 
-    def show_settings_dialog(self):
-        settings_dialog = SettingsDialog()
-        settings_dialog.exec_()
+    def show_settings_dialog(self, task_list):
+        try:
+            selected_item = task_list.currentItem()
+            if selected_item:
+                settings_dialog = TaskInfoDialog(self, selected_item)
+                settings_dialog.exec_()
+
+        except Exception as e:
+            QMessageBox.critical(window, 'Error', f'An error occurred while showing task information: {str(e)}')
 
     def exit_app(self):
         app.quit()
+class TaskInfoDialog(QDialog):
+    def __init__(self, ui_main_window, selected_item, parent=None):
+        try:
+            super(TaskInfoDialog, self).__init__(parent)
+            uic.loadUi("ui/taskinfo.ui", self)
 
+            all_tasks = db_manager.fetch_all_tasks()
+            created_date_text = all_tasks[ui_main_window.task_list.row(selected_item)][1]
+            created_datetime = QDateTime.fromString(created_date_text, "yyyy-MM-dd hh:mm:ss")
 
-class SettingsDialog(QDialog):
-    def __init__(self, parent=None):
-        super(SettingsDialog, self).__init__(parent)
-        uic.loadUi("ui/taskinfo.ui", self)
+            date_time_label = self.findChild(QLabel, 'createdtime')
+            date_time_label.setText(created_datetime.toString("MMMM d, yyyy hh:mm:ss AP"))
 
-        # Connect buttons to functions
-        self.save.clicked.connect(self.save_settings)
-        self.cancel.clicked.connect(self.close)
-
-    def save_settings(self):
-        due_datetime = self.setdate.dateTime().toPyDateTime()
-        # Save the due datetime to the database or perform any other necessary actions
-        # For now, let's print it
-        print("Due Date and Time:", due_datetime)
-        self.close()
-
+        except Exception as e:
+            print("Exception Occurred:", e)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -165,10 +143,21 @@ class Ui_MainWindow(object):
         self.refresh_2.clicked.connect(self.refresh_ongoing_tasks)
         self.info.clicked.connect(self.show_settings_dialog)
         self.graball()
+        self.info.setEnabled(False)
+        self.task_list.itemSelectionChanged.connect(self.check_selection)
+
+    def check_selection(self):
+        selected_item = self.task_list.currentItem()
+        self.info.setEnabled(selected_item is not None)
 
     def show_settings_dialog(self):
-        settings_dialog = SettingsDialog()
-        settings_dialog.exec_()
+        try:
+            selected_item = self.task_list.currentItem()
+            if selected_item:
+                settings_dialog = TaskInfoDialog(self, selected_item)
+                settings_dialog.exec_()
+        except Exception as e:
+            QMessageBox.critical(window, 'Error', f'An error occurred while showing task information: {str(e)}')
 
     def open_completed_tasks(self):
         self.completedwindow = QMainWindow()
@@ -243,7 +232,6 @@ class Ui_MainWindow(object):
         deletion_date = current_datetime.date().toString("yyyy-MM-dd")
         deletion_time = current_datetime.time().toString("hh:mm:ss")
         row_id = getattr(clicked_checkbox, 'row_id', None)
-        print(row_id)
         if row_id is not None and clicked_checkbox.isChecked():
             db_manager.add_completed_task(task, deletion_date, deletion_time, row_id)
             db_manager.delete_task(row_id)
@@ -254,31 +242,38 @@ class Ui_MainWindow(object):
         self.task_list.clear()
 
         for record in records:
-            task_text, row_id = record
-            item = QListWidgetItem()
-            checkbox_item = QCheckBox(task_text)
-            checkbox_item.clicked.connect(lambda _, checkbox_item=checkbox_item: self.checkbox_clicked(checkbox_item))
-            checkbox_item.row_id = row_id
-            item.setSizeHint(checkbox_item.sizeHint())
-            self.task_list.addItem(item)
-            self.task_list.setItemWidget(item, checkbox_item)
+            if len(record) == 3:
+                task_text, created_date, row_id = record
+                item = QListWidgetItem()
+                checkbox_item = QCheckBox(task_text)
+                checkbox_item.clicked.connect(lambda _, checkbox_item=checkbox_item: self.checkbox_clicked(checkbox_item))
+                checkbox_item.row_id = row_id
+                item.setSizeHint(checkbox_item.sizeHint())
+                self.task_list.addItem(item)
+                self.task_list.setItemWidget(item, checkbox_item)
+
+                # Set a minimum width for each item (adjust the value as needed)
+                item.setSizeHint(QSize(item.sizeHint().width(), 35))  # Set the width to 50 (adjust as needed)
 
     def add_task(self):
-        task_text = self.task_input.text()
-        due_datetime = None  # You can replace this with the actual due datetime
+        try:
+            task_text = self.task_input.text()
 
-        if task_text:
-            db_manager.add_task(task_text, due_datetime)
-            item = QListWidgetItem()
-            checkbox_item = QCheckBox(task_text)
-            checkbox_item.clicked.connect(lambda _, checkbox_item=checkbox_item: self.checkbox_clicked(checkbox_item))
-            tasks = db_manager.fetch_all_tasks()
-            checkbox_item.row_id = tasks[-1][1] if tasks else 1
-            item.setSizeHint(checkbox_item.sizeHint())
-            self.task_list.addItem(item)
-            self.task_list.setItemWidget(item, checkbox_item)
-            self.task_input.clear()
+            if task_text:
+                db_manager.add_task(task_text)
+                item = QListWidgetItem()
+                checkbox_item = QCheckBox(task_text)
+                checkbox_item.clicked.connect(lambda _, checkbox_item=checkbox_item: self.checkbox_clicked(checkbox_item))
+                checkbox_item.row_id = db_manager.fetch_all_tasks()[-1][2]
+                item.setSizeHint(checkbox_item.sizeHint())
+                self.task_list.addItem(item)
+                self.task_list.setItemWidget(item, checkbox_item)
+                self.task_input.clear()
 
+                self.graball()
+
+        except Exception as e:
+            QMessageBox.critical(window, 'Error', f'An error occurred while adding the task: {str(e)}')
 
     def delete_task(self):
         clicked_item = self.task_list.currentItem()
@@ -299,6 +294,11 @@ class Ui_MainWindow(object):
     def refresh_ongoing_tasks(self):
         self.graball()
 
+class NotificationThread(QThread):
+    notify_signal = pyqtSignal()
+
+    def run(self):
+        self.notify_signal.emit()
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -307,8 +307,12 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.setup_animations()
         self.setWindowIcon(QtGui.QIcon("resources/todo.png"))
         self.schedule_notifications()
-        self.tray_icon = SystemTrayIcon(QtGui.QIcon("resources/todo.png"), self)
+        self.tray_icon = SystemTrayIcon(QtGui.QIcon("resources/todo.png"), self.task_list, self)
         self.tray_icon.show()
+        self.notification_sound = QSoundEffect()
+        self.notification_sound.setSource(QUrl.fromLocalFile("resources/notify.wav"))
+        self.notification_thread = NotificationThread()
+        self.notification_thread.notify_signal.connect(self.send_notification_and_reschedule)
 
     def minimize_app(self):
         self.hide()
@@ -324,8 +328,25 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
     def schedule_notifications(self):
         notification_interval = 5 * 60 * 60
-        QTimer.singleShot(notification_interval * 1000, send_notification)
+        QTimer.singleShot(notification_interval * 1000, self.send_notification_and_reschedule)
+        QTimer.singleShot(notification_interval * 1000, self.schedule_notifications)
 
+    def send_notification_and_reschedule(self):
+        self.send_notification()
+        self.schedule_notifications()
+
+    def send_notification(self):
+        records = db_manager.fetch_all_tasks()
+        if records:
+            try:
+                notification.notify(
+                    title="Reminder",
+                    message="Don't forget to check your ongoing tasks!",
+                    timeout=10,
+                )
+                self.notification_sound.play()
+            except Exception as e:
+                print(f"Notification error: {e}")
 
 if __name__ == "__main__":
     create_database()

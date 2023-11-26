@@ -108,7 +108,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 self.play_sound(self.notify_sound)
                 mode_text = self.mode.text()
                 if mode_text == "Simple":
-                    self.timer_label.setText("00:15:00")
+                    self.timer_label.setText("00:00:15")
                 elif mode_text == "Medium":
                     self.timer_label.setText("00:20:00")
                 elif mode_text == "Intense":
@@ -146,7 +146,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 self.play_sound(self.notify_sound)
                 mode_text = self.mode.text()
                 if mode_text == "Simple":
-                    self.timer_label.setText("01:00:00")
+                    self.timer_label.setText("00:30:00")
                 elif mode_text == "Medium":
                     self.timer_label.setText("02:00:00")
                 elif mode_text == "Intense":
@@ -170,7 +170,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     def get_timer_duration(self):
         mode_text = self.mode.text()
         if mode_text == "Simple":
-            return timedelta(hours=1)
+            return timedelta(seconds=30)
         elif mode_text == "Medium":
             return timedelta(hours=2)
         elif mode_text == "Intense":
@@ -183,7 +183,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     def get_break_timer_duration(self):
         mode_text = self.mode.text()
         if mode_text == "Simple":
-            return timedelta(minutes=15)
+            return timedelta(seconds=15)
         elif mode_text == "Medium":
             return timedelta(minutes=20)
         elif mode_text == "Intense":
@@ -195,7 +195,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
     def simplelevel(self):
         self.click_sound.play()
-        self.timer_label.setText("01:00:00")
+        self.timer_label.setText("00:00:30")
         self.mode.setText("Simple")
 
     def mediumlevel(self):
@@ -221,7 +221,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.elapsed_time = 0
         text = self.mode.text()
         if text == "Simple":
-            self.timer_label.setText("01:00:00")
+            self.timer_label.setText("00:00:30")
         elif text == "Medium":
             self.timer_label.setText("02:00:00")
         elif text == "Intense":

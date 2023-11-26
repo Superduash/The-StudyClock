@@ -7,11 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>991</width>
-    <height>543</height>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Study Focus Pro</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../resources/studying.png</normaloff>../resources/studying.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="widget" native="true">
@@ -60,10 +64,10 @@
      <widget class="QFrame" name="study_focus">
       <property name="geometry">
        <rect>
-        <x>100</x>
+        <x>-10</x>
         <y>0</y>
-        <width>751</width>
-        <height>101</height>
+        <width>1001</width>
+        <height>131</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -75,10 +79,10 @@
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
-         <x>190</x>
-         <y>20</y>
-         <width>491</width>
-         <height>71</height>
+         <x>280</x>
+         <y>10</y>
+         <width>451</width>
+         <height>111</height>
         </rect>
        </property>
        <property name="font">
@@ -90,17 +94,23 @@
         </font>
        </property>
        <property name="text">
-        <string>Study Focus</string>
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../resources/studyfocus.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
      <widget class="QFrame" name="frame_3">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>100</y>
-        <width>341</width>
-        <height>441</height>
+        <x>30</x>
+        <y>150</y>
+        <width>301</width>
+        <height>361</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -109,25 +119,97 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QPushButton" name="simple">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>80</y>
-         <width>161</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>18</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="simple">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s; 
+}
+</string>
+         </property>
+         <property name="text">
+          <string> Simple</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/simple.png</normaloff>../resources/simple.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>50</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="medium">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s; 
+}
+</string>
+         </property>
+         <property name="text">
+          <string> Medium</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/hard.png</normaloff>../resources/hard.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>50</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="intense">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
     background-color: transparent;
     border: 2px solid black;
     border-radius: 25px;
@@ -138,51 +220,34 @@ QPushButton:hover {
     border: 2px solid #000080;
     transition: background-color 0.3s, border 0.3s;
 }</string>
-       </property>
-       <property name="text">
-        <string>Simple</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="mode_selector">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>291</width>
-         <height>61</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>16</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Mode Selector :</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="medium">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>150</y>
-         <width>161</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>18</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
+         </property>
+         <property name="text">
+          <string> Intense</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/studying.png</normaloff>../resources/studying.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>50</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="custom">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
     background-color: transparent;
     border: 2px solid black;
     border-radius: 25px;
@@ -193,87 +258,31 @@ QPushButton:hover {
     border: 2px solid #000080;
     transition: background-color 0.3s, border 0.3s;
 }</string>
-       </property>
-       <property name="text">
-        <string>Medium</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="intense">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>220</y>
-         <width>161</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>18</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: transparent;
-    border: 2px solid black;
-    border-radius: 25px;
-}
-
-QPushButton:hover {
-    background-color: rgba(0, 0, 255, 50);
-    border: 2px solid #000080;
-    transition: background-color 0.3s, border 0.3s;
-}</string>
-       </property>
-       <property name="text">
-        <string>Intense</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="custom">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>290</y>
-         <width>161</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>18</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: transparent;
-    border: 2px solid black;
-    border-radius: 25px;
-}
-
-QPushButton:hover {
-    background-color: rgba(0, 0, 255, 50);
-    border: 2px solid #000080;
-    transition: background-color 0.3s, border 0.3s;
-}</string>
-       </property>
-       <property name="text">
-        <string>Custom</string>
-       </property>
-      </widget>
+         </property>
+         <property name="text">
+          <string> Custom</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../resources/custom.png</normaloff>../resources/custom.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>50</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QFrame" name="frame_4">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>100</y>
-        <width>641</width>
-        <height>201</height>
+        <x>380</x>
+        <y>130</y>
+        <width>551</width>
+        <height>73</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -282,69 +291,38 @@ QPushButton:hover {
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QLabel" name="timer_label">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>50</y>
-         <width>531</width>
-         <height>151</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>60</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>00:00:00</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="mode_selected">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>0</y>
-         <width>301</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>24</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Mode Selected : </string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="mode">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>0</y>
-         <width>271</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Trebuchet MS</family>
-         <pointsize>24</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Not Selected</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="mode_selected">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>22</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Mode Selected : </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="mode">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>22</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Not Selected</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QPushButton" name="start">
       <property name="geometry">
@@ -358,7 +336,7 @@ QPushButton:hover {
       <property name="font">
        <font>
         <family>Trebuchet MS</family>
-        <pointsize>18</pointsize>
+        <pointsize>16</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -377,7 +355,17 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>Start</string>
+       <string> Start</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../resources/play.png</normaloff>../resources/play.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>35</width>
+        <height>35</height>
+       </size>
       </property>
      </widget>
      <widget class="QPushButton" name="pause">
@@ -392,7 +380,7 @@ QPushButton:hover {
       <property name="font">
        <font>
         <family>Trebuchet MS</family>
-        <pointsize>18</pointsize>
+        <pointsize>12</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -411,7 +399,17 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>Pause/Resume</string>
+       <string> Pause/Resume</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../resources/pause-play.png</normaloff>../resources/pause-play.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>35</width>
+        <height>41</height>
+       </size>
       </property>
      </widget>
      <widget class="QPushButton" name="reset">
@@ -426,7 +424,7 @@ QPushButton:hover {
       <property name="font">
        <font>
         <family>Trebuchet MS</family>
-        <pointsize>18</pointsize>
+        <pointsize>16</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -445,7 +443,17 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>Reset</string>
+       <string> Reset</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../resources/reset.png</normaloff>../resources/reset.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>35</width>
+        <height>35</height>
+       </size>
       </property>
      </widget>
      <widget class="QPushButton" name="minimize">
@@ -460,7 +468,7 @@ QPushButton:hover {
       <property name="font">
        <font>
         <family>Trebuchet MS</family>
-        <pointsize>18</pointsize>
+        <pointsize>16</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -479,7 +487,59 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string>Minimize</string>
+       <string> Minimize</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../resources/minimize2.png</normaloff>../resources/minimize2.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="timer_label">
+      <property name="geometry">
+       <rect>
+        <x>420</x>
+        <y>180</y>
+        <width>441</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>60</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>00:00:00</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="mode_selector">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>337</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>  Mode Selector :</string>
       </property>
      </widget>
     </widget>
