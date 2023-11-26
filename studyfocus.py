@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtMultimedia import QSoundEffect
 from datetime import datetime, timedelta
 from plyer import notification
-from PyQt5 import uic, QtGui, QtCore
+from PyQt5 import uic, QtCore
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
