@@ -175,7 +175,7 @@ class Ui_MainWindow(object):
 
     def clear_completed_tasks(self):
         result = QMessageBox.question(
-            self,
+            self.completedwindow,
             'Confirmation',
             'Are you sure you want to clear completed tasks?',
             QMessageBox.Yes | QMessageBox.No,
@@ -188,7 +188,7 @@ class Ui_MainWindow(object):
 
     def undo_clear_completed_tasks(self):
         result = QMessageBox.question(
-            self,
+            self.completedwindow,
             'Confirmation',
             'Are you sure you want to undo clearing completed tasks?',
             QMessageBox.Yes | QMessageBox.No,
@@ -201,6 +201,8 @@ class Ui_MainWindow(object):
 
     def minimize_to_tray(self):
         window.hide()
+        if hasattr(self, 'completedwindow') and self.completedwindow.isVisible():
+            self.completedwindow.hide()
 
     def checkbox_clicked(self, clicked_checkbox):
         task = clicked_checkbox.text()
@@ -270,6 +272,11 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.schedule_notifications()
         self.tray_icon = SystemTrayIcon(QtGui.QIcon("resources/todo.png"), self)
         self.tray_icon.show()
+
+    def minimize_app(self):
+        self.hide()
+        if hasattr(self, 'completedwindow') and self.completedwindow.isVisible():
+            self.completedwindow.hide()
 
     def setup_animations(self):
         self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")
