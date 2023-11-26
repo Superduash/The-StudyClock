@@ -8,6 +8,44 @@ from PyQt5.QtCore import QTimer, QDateTime
 db_manager = None
 trash_bin = []
 
+class SettingsDialog(QDialog):
+    def __init__(self):
+        super(SettingsDialog, self).__init__()
+        uic.loadUi("ui/todosettings.ui", self)
+
+        self.notifications.stateChanged.connect(self.handle_notifications)
+        self.autostart.stateChanged.connect(self.handle_autostart)
+        self.minimize.stateChanged.connect(self.handle_minimize)
+
+        self.pushButton.clicked.connect(self.save_settings)
+        self.pushButton_2.clicked.connect(self.cancel_settings)
+
+    def handle_notifications(self, state):
+        if state == 2:
+            print("Notifications Enabled")
+        else:
+            print("Notifications Disabled")
+
+    def handle_autostart(self, state):
+        if state == 2:
+            print("Autostart Enabled")
+        else:
+            print("Autostart Disabled")
+
+    def handle_minimize(self, state):
+        if state == 2:
+            print("Minimize Enabled")
+        else:
+            print("Minimize Disabled")
+
+    def save_settings(self):
+        print("Settings Saved")
+        self.accept()
+
+    def cancel_settings(self):
+        print("Settings Cancelled")
+        self.reject()
+
 def create_database():
     global db_manager
     conn = sqlite3.connect('task_buddy.db')
@@ -101,29 +139,6 @@ class DatabaseManager:
 
         self.conn.commit()
 
-class SystemTrayIcon(QSystemTrayIcon):
-    def __init__(self, icon, parent=None):
-        QSystemTrayIcon.__init__(self, icon, parent)
-        self.setToolTip("Task Buddy")
-        menu = QMenu(parent)
-        restore_action = menu.addAction("Restore")
-        minimize_action = menu.addAction("Minimize")
-        exit_action = menu.addAction("Exit")
-        restore_action.triggered.connect(self.restore_app)
-        minimize_action.triggered.connect(self.minimize_app)
-        exit_action.triggered.connect(self.exit_app)
-        self.setContextMenu(menu)
-
-    def restore_app(self):
-        app.setActiveWindow(window)
-        window.showNormal()
-
-    def minimize_app(self):
-        window.hide()
-
-    def exit_app(self):
-        app.quit()
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         uic.loadUi("ui/todolistgui.ui", self)
@@ -131,11 +146,22 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         MainWindow.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)
         self.delete_2.clicked.connect(self.delete_task)
-        self.minimize.clicked.connect(self.minimize_to_tray)
+        self.Settings_2.clicked.connect(self.open_settings_dialog)
         self.Create_task.clicked.connect(self.add_task)
         self.Completed.clicked.connect(self.open_completed_tasks)
         self.refresh_2.clicked.connect(self.refresh_ongoing_tasks)
         self.graball()
+
+    def open_settings_dialog(self):
+        settings_dialog = SettingsDialog()
+        result = settings_dialog.exec_()
+
+        if result == QDialog.Accepted:
+            print("Settings Accepted")
+            # Do something when settings are accepted
+        else:
+            print("Settings Rejected")
+            # Do something when settings are rejected
 
     def open_completed_tasks(self):
         self.completedwindow = QMainWindow()
@@ -174,33 +200,12 @@ class Ui_MainWindow(object):
         self.completed_tasks_table()
 
     def clear_completed_tasks(self):
-        result = QMessageBox.question(
-            self,
-            'Confirmation',
-            'Are you sure you want to clear completed tasks?',
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
-        )
-
-        if result == QMessageBox.Yes:
-            db_manager.clear_completed_tasks()
-            self.completed_tasks_table()
+        db_manager.clear_completed_tasks()
+        self.completed_tasks_table()
 
     def undo_clear_completed_tasks(self):
-        result = QMessageBox.question(
-            self,
-            'Confirmation',
-            'Are you sure you want to undo clearing completed tasks?',
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
-        )
-
-        if result == QMessageBox.Yes:
-            db_manager.undo_clear_completed_tasks()
-            self.completed_tasks_table()
-
-    def minimize_to_tray(self):
-        window.hide()
+        db_manager.undo_clear_completed_tasks()
+        self.completed_tasks_table()
 
     def checkbox_clicked(self, clicked_checkbox):
         task = clicked_checkbox.text()
@@ -268,8 +273,6 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.setup_animations()
         self.setWindowIcon(QtGui.QIcon("resources/todo.png"))
         self.schedule_notifications()
-        self.tray_icon = SystemTrayIcon(QtGui.QIcon("resources/todo.png"), self)
-        self.tray_icon.show()
 
     def setup_animations(self):
         self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")

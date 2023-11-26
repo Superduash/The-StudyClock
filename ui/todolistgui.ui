@@ -64,7 +64,7 @@
      <widget class="QFrame" name="frame_2">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>230</x>
         <y>10</y>
         <width>371</width>
         <height>101</height>
@@ -411,19 +411,19 @@ QPushButton:hover {
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="Settings_2">
+     <widget class="QPushButton" name="minimize">
       <property name="geometry">
        <rect>
-        <x>710</x>
+        <x>680</x>
         <y>30</y>
-        <width>247</width>
+        <width>291</width>
         <height>55</height>
        </rect>
       </property>
       <property name="font">
        <font>
         <family>Trebuchet MS</family>
-        <pointsize>14</pointsize>
+        <pointsize>10</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -442,11 +442,11 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="text">
-       <string> Settings</string>
+       <string>  Minimize To System Tray</string>
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../resources/gear.png</normaloff>../resources/gear.png</iconset>
+        <normaloff>../resources/minimize.png</normaloff>../resources/minimize.png</iconset>
       </property>
       <property name="iconSize">
        <size>
