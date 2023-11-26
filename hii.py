@@ -3,9 +3,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QSystemTrayIcon, 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QTimer, QDateTime, Qt
 from datetime import datetime, timedelta
-from plyer import notification
 from PyQt5 import uic, QtGui, QtCore
 from PyQt5.QtMultimedia import QSoundEffect
+from plyer import notification
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -20,8 +21,10 @@ class Ui_MainWindow(object):
         self.minimize.clicked.connect(self.minimize_to_system_tray)
         self.reset.clicked.connect(self.reset_timer)
         self.start.clicked.connect(self.start_timer)
+        self.pause.clicked.connect(self.pause_resume_timer)
         self.paused = False
         self.elapsed_time = 0
+
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -46,8 +49,20 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.pause.clicked.connect(self.pause_resume_timer)
 
         self.timer = QTimer(self)
+        self.break_timer = QTimer(self)
+
         self.timer.timeout.connect(self.update_timer)
-        
+        self.break_timer.timeout.connect(self.break_timer_expired)
+
+        self.create_system_tray_icon()
+
+        self.break_duration_simple = timedelta(minutes=10)
+        self.break_duration_medium = timedelta(minutes=20)
+        self.break_duration_intense = timedelta(minutes=30)
+
+        self.break_duration_custom = None  # Placeholder for custom break duration
+        self.custom_settings_window = None
+
     def start_timer(self):
         if self.timer_label.text() == "00:00:00":
             # Display a QMessageBox indicating that a mode needs to be selected
@@ -56,11 +71,12 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             msg.setText("Please select a mode before starting the timer.")
             msg.setWindowTitle("Mode Not Selected")
             msg.exec_()
-        elif self.mode.text() in ["Simple", "Medium", "Intense"]:
+        elif self.mode.text() in ["Simple", "Medium", "Intense", "Custom"]:
             self.start_time = datetime.now()
             self.elapsed_time = 0
             self.timer_duration = self.get_timer_duration()
-            self.timer.start(20)
+            self.timer.start(1000)
+            self.break_timer.start(1000)  # Start the break timer concurrently
             self.start.setEnabled(False)
             self.paused = False
             self.notification_shown = False
@@ -71,12 +87,21 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             remaining_time = self.timer_duration.total_seconds() - elapsed_time
 
             if remaining_time <= 0:
-                pass
-            
+                self.timer.stop()
+                self.break_timer.stop()
+                self.timer_label.setText("00:00:00")
+
+                if not self.notification_shown:
+                    self.show_notification("Break Time!", "Take a break and relax.")
+                    self.notification_shown = True
+
+                # Start the break timer with the appropriate duration
+                self.break_timer_duration = self.get_break_duration()
+                self.break_timer.start(50)
+
             else:
-                hours= int(remaining_time//3600)
-                minutes = int(remaining_time//60 - (hours * 60))
-                seconds = int(remaining_time - (hours * 3600) - (minutes * 60))
+                hours,seconds = divmod(int(remaining_time), 3600)
+                minutes, seconds = divmod(int(remaining_time), 60)
                 formatted_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
                 self.timer_label.setText(formatted_time)
 
@@ -88,8 +113,35 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             return timedelta(hours=2)
         elif mode_text == "Intense":
             return timedelta(hours=3)
+        elif mode_text == "Custom":
+            return self.break_duration_custom if self.break_duration_custom else timedelta()
+
+    def get_break_duration(self):
+        mode_text = self.mode.text()
+        if mode_text == "Simple":
+            return self.break_duration_simple
+        elif mode_text == "Medium":
+            return self.break_duration_medium
+        elif mode_text == "Intense":
+            return self.break_duration_intense
+        elif mode_text == "Custom":
+            return self.break_duration_custom if self.break_duration_custom else timedelta()
+    def break_timer_expired(self):
+        break_duration = self.get_break_duration()
+
+        if break_duration.total_seconds() <= 0:
+            self.break_timer.stop()
+            self.notification_shown = False
+            self.show_notification("Back to Work!", "The next study session has started. Get back to work!")
+            self.reset_timer()
+            self.start_timer()
         else:
-            return timedelta()
+            hours, remainder = divmod(int(break_duration.total_seconds()), 3600)
+            minutes, seconds = divmod(remainder, 60)
+            formatted_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+            self.timer_label.setText(formatted_time)
+
+
     def simplelevel(self):
         self.timer_label.setText("00:00:10")
         self.mode.setText("Simple")
@@ -104,19 +156,20 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
     def customlevel(self):
         self.mode.setText("Custom")
-        self.customwindow = QMainWindow()
-        uic.loadUi("ui/studyfocuscustom.ui", self.customwindow)
-        self.customwindow.show()
-    
+        if not self.custom_settings_window:
+            self.custom_settings_window = CustomSettingsWindow(self)
+            self.custom_settings_window.show()
+
     def setup_animations(self):
         self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")
         self.fade_in_animation.setStartValue(0)
         self.fade_in_animation.setEndValue(1)
         self.fade_in_animation.setDuration(500)
-        self.fade_in_animation.start()     
-        
+        self.fade_in_animation.start()
+
     def reset_timer(self):
         self.timer.stop()
+        self.break_timer.stop()
         self.elapsed_time = 0
         text = self.mode.text()
         if text == "Simple":
@@ -126,28 +179,33 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         elif text == "Intense":
             self.timer_label.setText("03:00:00")
         elif text == "Custom":
-            # Handle resetting for custom mode (if needed)
-            pass
+            self.timer_label.setText("00:00:00")
         self.start.setEnabled(True)  # Re-enable the start button
         self.paused = False
+
     def pause_resume_timer(self):
         if self.timer.isActive():
             self.timer.stop()
+            self.break_timer.stop()
             self.paused = True
             self.elapsed_time += (datetime.now() - self.start_time).total_seconds()
         else:
             if self.paused:
                 self.start_time = datetime.now()
-                self.timer.start(20)
+                self.timer.start(1000)
+                self.break_timer.start(1000)
                 self.paused = False
             else:
                 self.start_time = datetime.now()
-                self.timer.start(20)
+                self.timer.start(1000)
+                self.break_timer.start(1000)
                 self.paused = False
                 self.start.setEnabled(False)
+
     def minimize_to_system_tray(self):
         self.hide()
-        self.create_system_tray_icon()
+        self.tray_icon.show_message("StudyFocus", "Application minimized to system tray.", QIcon("resources/todo.png"))
+
     def create_system_tray_icon(self):
         menu = QMenu(self)
         open_action = menu.addAction("Open")
@@ -158,17 +216,43 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QIcon("resources/logo.jpg"))
         self.tray_icon.setContextMenu(menu)
-        self.tray_icon.show()
+
     def close_application(self):
         self.tray_icon.hide()
         sys.exit()
-        
+
+    def show_notification(self, title, message):
+        notification.notify(
+            title=title,
+            message=message,
+            app_icon=None,  # e.g., "C:\\icon_32x32.ico"
+            timeout=10,  # seconds
+        )
+
+
+class CustomSettingsWindow(QMainWindow):
+    def __init__(self, parent):
+        super().__init__(parent)
+        uic.loadUi("ui/custom_settings.ui", self)
+        self.apply_button.clicked.connect(self.apply_settings)
+        self.cancel_button.clicked.connect(self.close)
+
+    def apply_settings(self):
+        parent = self.parent()
+        custom_duration_text = self.custom_duration.text()
+
+        try:
+            custom_duration = timedelta(minutes=int(custom_duration_text))
+            parent.break_duration_custom = custom_duration
+            parent.timer_label.setText(str(custom_duration))
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for custom duration.")
+
+        self.close()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyMainWindow()
     window.show()
     sys.exit(app.exec_())
-    
-'''QtCore.QTimer.singleShot(1000, self.show_break_notification)  92 
-self.show_notification("Break Started", "Enjoy your break!", self.break_duration) 99
-self.show_notification("Break Ended", "Time for another study session!", self.timer_duration)'''
