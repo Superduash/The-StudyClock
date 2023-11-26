@@ -23,8 +23,6 @@ class Ui_MainWindow(object):
         self.start.clicked.connect(self.start_timer)
         self.paused = False
         self.elapsed_time = 0
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_timer)
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -39,10 +37,16 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.fade_in_animation.setDuration(500)
         self.fade_in_animation.start()     
     def start_timer(self):
-        if not self.timer.isActive() and not self.paused:
-            self.start_time = datetime.now()
-            self.timer.start(20) 
-            self.start.setEnabled(False)  
+        if self.timer == "00:00:00":
+            msg = QMessageBox()
+            msg.setText("You didn't select a mode")
+        else:
+            if not self.timer.isActive() and not self.paused:
+                self.start_time = datetime.now()
+                self.timer.start(20) 
+                self.start.setEnabled(False) 
+                self.timer = QTimer(self)
+                self.timer.timeout.connect(self.update_timer) 
     def reset_timer(self):
         self.timer.stop()
         self.elapsed_time = 0
@@ -57,9 +61,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             self.timer = QLabel(self)
             self.timer.setText("03:00:00")
         elif text == "Custom":
-            pass           
-        self.start_button.setEnabled(True)
-        self.paused = False
+           self.start_button.setEnabled(True)
+           self.paused = False
     def pause_resume_timer(self):
         if self.timer.isActive():
             self.timer.stop()
