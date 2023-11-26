@@ -1,6 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QSystemTrayIcon, QMenu, QPushButton, QMessageBox
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from PyQt5.QtCore import QTimer, QDateTime, Qt
 from datetime import datetime, timedelta
 from plyer import notification
@@ -44,9 +45,17 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.reset.clicked.connect(self.reset_timer)
         self.minimize.clicked.connect(self.minimize_to_system_tray)
         self.pause.clicked.connect(self.pause_resume_timer)
+        
+        self.notify_sound = QSoundEffect()
+        self.notify_sound.setSource(QUrl.fromLocalFile("resources/notify.wav"))
+        
+        self.notification_shown = False
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_timer)
+        
+        self.break_timer = QTimer(self)
+        self.break_timer.timeout.connect(self.update_break_timer)
         
     def start_timer(self):
         if self.timer_label.text() == "00:00:00":
@@ -71,27 +80,100 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             remaining_time = self.timer_duration.total_seconds() - elapsed_time
 
             if remaining_time <= 0:
-                pass
-            
+                self.timer.stop()
+                self.pause.clicked.disconnect(self.pause_resume_timer)
+                self.pause.clicked.connect(self.break_pause_resume_timer)
+                notification.notify(
+                title="Break Time!!",
+                message="It's break time! Take a break!",
+                timeout=5,
+                )  
+                self.play_sound(self.notify_sound)
+                mode_text = self.mode.text()
+                if mode_text == "Simple":
+                    self.timer_label.setText("00:00:15")
+                elif mode_text == "Medium":
+                    self.timer_label.setText("00:20:00")    
+                elif mode_text == "Intense":
+                    self.timer_label.setText("00:30:00")
+                elif mode_text == "Custom":
+                    pass
+                self.break_time = datetime.now()
+                self.elapsed_time = 0
+                self.break_time_duration = self.get_break_timer_duration()
+                self.break_timer.start(50)
+                self.start.setEnabled(False)
+                self.paused = False
+                self.notification_shown = False
+                
             else:
                 hours= int(remaining_time//3600)
                 minutes = int(remaining_time//60 - (hours * 60))
                 seconds = int(remaining_time - (hours * 3600) - (minutes * 60))
                 formatted_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
                 self.timer_label.setText(formatted_time)
-
+    def update_break_timer(self):
+        if self.break_time and not self.paused:
+            elapsed_time = self.elapsed_time + (datetime.now() - self.break_time).total_seconds()
+            remaining_time = self.break_time_duration.total_seconds() - elapsed_time
+            
+            if remaining_time <= 0:
+                self.break_timer.stop()
+                self.pause.clicked.disconnect(self.break_pause_resume_timer)
+                self.pause.clicked.connect(self.pause_resume_timer)
+                notification.notify(
+                title="Break Ended",
+                message="Break is over! Time for another study session!",
+                timeout=5,
+                )  
+                self.play_sound(self.notify_sound)
+                mode_text = self.mode.text()
+                if mode_text == "Simple":
+                    self.timer_label.setText("00:30:00")
+                elif mode_text == "Medium":
+                    self.timer_label.setText("02:00:00")    
+                elif mode_text == "Intense":
+                    self.timer_label.setText("03:00:00")
+                elif mode_text == "Custom":
+                    pass
+                self.start_time = datetime.now()
+                self.elapsed_time = 0
+                self.timer_duration = self.get_timer_duration()
+                self.timer.start(20)
+                self.start.setEnabled(False)
+                self.paused = False
+                self.notification_shown = False
+            else:
+                hours= int(remaining_time//3600)
+                minutes = int(remaining_time//60 - (hours * 60))
+                seconds = int(remaining_time - (hours * 3600) - (minutes * 60))
+                formatted_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                self.timer_label.setText(formatted_time)
+                
+            
+        
     def get_timer_duration(self):
         mode_text = self.mode.text()
         if mode_text == "Simple":
-            return timedelta(seconds=10)
+            return timedelta(seconds=30)
         elif mode_text == "Medium":
             return timedelta(hours=2)
         elif mode_text == "Intense":
             return timedelta(hours=3)
         else:
             return timedelta()
+    def get_break_timer_duration(self):
+        mode_text = self.mode.text()
+        if mode_text == "Simple":
+            return timedelta(seconds=15)
+        elif mode_text == "Medium":
+            return timedelta(minutes=20)
+        elif mode_text == "Intense":
+            return timedelta(minutes=30)
+        else:
+            return timedelta()
     def simplelevel(self):
-        self.timer_label.setText("00:00:10")
+        self.timer_label.setText("00:00:30")
         self.mode.setText("Simple")
 
     def mediumlevel(self):
@@ -136,13 +218,28 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             self.paused = True
             self.elapsed_time += (datetime.now() - self.start_time).total_seconds()
         else:
+                if self.paused:
+                    self.start_time = datetime.now()
+                    self.timer.start(20)
+                    self.paused = False
+                else:
+                    self.start_time = datetime.now()
+                    self.timer.start(20)
+                    self.paused = False
+                    self.start.setEnabled(False)
+    def break_pause_resume_timer(self):
+        if self.break_timer.isActive():
+            self.break_timer.stop()
+            self.paused = True
+            self.elapsed_time += (datetime.now() - self.break_time).total_seconds()
+        else:
             if self.paused:
-                self.start_time = datetime.now()
-                self.timer.start(20)
+                self.break_time = datetime.now()
+                self.break_timer.start(20)
                 self.paused = False
             else:
-                self.start_time = datetime.now()
-                self.timer.start(20)
+                self.break_time = datetime.now()
+                self.break_timer.start(20)
                 self.paused = False
                 self.start.setEnabled(False)
     def minimize_to_system_tray(self):
@@ -162,7 +259,13 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     def close_application(self):
         self.tray_icon.hide()
         sys.exit()
-        
+    def play_sound(self, sound_effect):
+        if sound_effect.isLoaded():
+            sound_effect.play()
+        else:
+            print("Error: Sound file not loaded.")
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyMainWindow()
