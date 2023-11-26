@@ -43,6 +43,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.start.clicked.connect(self.start_timer)
         self.reset.clicked.connect(self.reset_timer)
         self.minimize.clicked.connect(self.minimize_to_system_tray)
+        self.pause.clicked.connect(self.pause_resume_timer)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_timer)
@@ -73,8 +74,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 pass
             
             else:
-                minutes, seconds = divmod(int(remaining_time), 60)
-                formatted_time = f"{minutes:02d}:{seconds:02d}"
+                hours,minutes, seconds = divmod(int(remaining_time), 60)
+                formatted_time = f"{hours:02d}{minutes:02d}:{seconds:02d}"
                 self.timer_label.setText(formatted_time)
 
     def get_timer_duration(self):
