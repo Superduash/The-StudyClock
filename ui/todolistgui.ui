@@ -113,7 +113,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QPushButton" name="refresh2">
+        <widget class="QPushButton" name="refresh_2">
          <property name="font">
           <font>
            <family>Trebuchet MS</family>
@@ -144,14 +144,14 @@ QPushButton:hover {
          </property>
          <property name="iconSize">
           <size>
-           <width>45</width>
+           <width>35</width>
            <height>51</height>
           </size>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="Settings">
+        <widget class="QPushButton" name="info">
          <property name="font">
           <font>
            <family>Trebuchet MS</family>
@@ -302,6 +302,12 @@ QPushButton:hover {
          <property name="styleSheet">
           <string notr="true"/>
          </property>
+         <property name="viewMode">
+          <enum>QListView::ListMode</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -408,9 +414,9 @@ QPushButton:hover {
      <widget class="QPushButton" name="Settings_2">
       <property name="geometry">
        <rect>
-        <x>760</x>
+        <x>710</x>
         <y>30</y>
-        <width>197</width>
+        <width>247</width>
         <height>55</height>
        </rect>
       </property>
