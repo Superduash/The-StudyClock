@@ -81,8 +81,8 @@
      <widget class="QLabel" name="length_of_session_label">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>130</y>
+        <x>10</x>
+        <y>90</y>
         <width>271</width>
         <height>71</height>
        </rect>
@@ -105,8 +105,8 @@
      <widget class="QLabel" name="format">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>300</y>
+        <x>140</x>
+        <y>220</y>
         <width>321</width>
         <height>81</height>
        </rect>
@@ -127,7 +127,7 @@
       <property name="geometry">
        <rect>
         <x>330</x>
-        <y>140</y>
+        <y>110</y>
         <width>181</width>
         <height>41</height>
        </rect>
@@ -139,8 +139,8 @@
      <widget class="QLabel" name="length_of_break_label">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>210</y>
+        <x>10</x>
+        <y>160</y>
         <width>281</width>
         <height>61</height>
        </rect>
@@ -161,13 +161,47 @@
       <property name="geometry">
        <rect>
         <x>330</x>
-        <y>210</y>
+        <y>170</y>
         <width>181</width>
         <height>41</height>
        </rect>
       </property>
       <property name="displayFormat">
        <string>HH:mm:ss</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="save">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>300</y>
+        <width>211</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>18</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 25px;
+}
+
+QPushButton:hover {
+    background-color: rgba(0, 0, 255, 50);
+    border: 2px solid #000080;
+    transition: background-color 0.3s, border 0.3s;
+}</string>
+      </property>
+      <property name="text">
+       <string>Done</string>
       </property>
      </widget>
     </widget>

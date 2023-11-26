@@ -23,6 +23,28 @@ class Ui_MainWindow(object):
         self.start.clicked.connect(self.start_timer)
         self.paused = False
         self.elapsed_time = 0
+        
+    def customlevel(self):
+        self.mode.setText("Custom")
+        self.customwindow = QMainWindow()
+        uic.loadUi("ui/studyfocuscustom.ui", self.customwindow)
+        self.custom_timer_window()
+        self.customwindow.show()
+        
+    def custom_timer_window(self):
+        done_button = self.customwindow.findChild(QPushButton, 'save')
+        self.length_of_session1 = self.customwindow.findChild(QTimeEdit, 'length_of_session')
+        self.length_of_break1 = self.customwindow.findChild(QTimeEdit, 'length_of_break')
+        done_button.clicked.connect(self.customaddons)
+        
+    def customaddons(self):
+        self.selected_time = self.length_of_session1.time()
+        self.time_in_seconds = (-1)* self.selected_time.secsTo(QTime(0, 0))
+        self.formatted_time = self.selected_time.toString("hh:mm:ss")
+        self.timer_label.setText(self.formatted_time)
+        self.selected_break_time = self.length_of_break1.time()
+        self.break_time_in_seconds = (-1)* self.selected_break_time.secsTo(QTime(0, 0))
+        self.formatted_break_time = self.selected_break_time.toString("hh:mm:ss")
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -65,7 +87,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             msg.setText("Please select a mode before starting the timer.")
             msg.setWindowTitle("Mode Not Selected")
             msg.exec_()
-        elif self.mode.text() in ["Simple", "Medium", "Intense"]:
+        elif self.mode.text() in ["Simple", "Medium", "Intense","Custom"]:
             self.start_time = datetime.now()
             self.elapsed_time = 0
             self.timer_duration = self.get_timer_duration()
@@ -97,7 +119,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 elif mode_text == "Intense":
                     self.timer_label.setText("00:30:00")
                 elif mode_text == "Custom":
-                    pass
+                    self.timer_label.setText(self.formatted_break_time)
                 self.break_time = datetime.now()
                 self.elapsed_time = 0
                 self.break_time_duration = self.get_break_timer_duration()
@@ -135,7 +157,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 elif mode_text == "Intense":
                     self.timer_label.setText("03:00:00")
                 elif mode_text == "Custom":
-                    pass
+                    self.timer_label.setText(self.formatted_time)
                 self.start_time = datetime.now()
                 self.elapsed_time = 0
                 self.timer_duration = self.get_timer_duration()
@@ -160,6 +182,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             return timedelta(hours=2)
         elif mode_text == "Intense":
             return timedelta(hours=3)
+        elif mode_text == "Custom":
+             return timedelta(seconds=self.time_in_seconds)
         else:
             return timedelta()
     def get_break_timer_duration(self):
@@ -170,6 +194,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             return timedelta(minutes=20)
         elif mode_text == "Intense":
             return timedelta(minutes=30)
+        elif mode_text == "Custom":
+            return timedelta(seconds=self.break_time_in_seconds)
         else:
             return timedelta()
     def simplelevel(self):
@@ -184,12 +210,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.timer_label.setText("03:00:00")
         self.mode.setText("Intense")
 
-    def customlevel(self):
-        self.mode.setText("Custom")
-        self.customwindow = QMainWindow()
-        uic.loadUi("ui/studyfocuscustom.ui", self.customwindow)
-        self.customwindow.show()
-    
+        
+          
     def setup_animations(self):
         self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")
         self.fade_in_animation.setStartValue(0)
@@ -208,8 +230,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         elif text == "Intense":
             self.timer_label.setText("03:00:00")
         elif text == "Custom":
-            # Handle resetting for custom mode (if needed)
-            pass
+            self.timer_label.setText(self.formatted_time)
         self.start.setEnabled(True)  # Re-enable the start button
         self.paused = False
     def pause_resume_timer(self):
