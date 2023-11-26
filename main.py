@@ -1,51 +1,93 @@
 import sys
-from PyQt5.QtWidgets import QDesktopWidget, QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
-class MyWindow(QMainWindow):
+
+class MainWindow(QMainWindow):
     def __init__(self):
-        super().__init__()
+        super(MainWindow, self).__init__()
 
-        self.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center;")
+        # Load UI from main.ui
+        self.load_ui()
 
-        desktop = QDesktopWidget()
-        screen_rect = desktop.availableGeometry()
-        initial_width = screen_rect.width() * 1
-        initial_height = screen_rect.height() * 0.966
+        # Setup UI elements
+        self.setup_ui_elements()
 
-        title_label = QLabel(self)
-        title_pixmap = QPixmap("resources/title.png")
-        title_label.setPixmap(title_pixmap.scaledToWidth(initial_width * 0.3))
-        title_label.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+    def load_ui(self):
+        from PyQt5 import uic
 
-        # Add a settings button
-        settings_button = QPushButton("Settings", self)
-        settings_button.clicked.connect(self.open_settings)
-        settings_button.setStyleSheet("background-color: #3498db; color: white; border: 1px solid #297fb8; padding: 5px; border-radius: 5px;")
-        settings_button.setMaximumWidth(100)  # Adjust the width as needed
+        # Load the UI file
+        uic.loadUi('ui/main.ui', self)
 
-        central_widget = QWidget(self)
-        central_layout = QVBoxLayout(central_widget)
-        central_layout.addWidget(title_label)
-        central_layout.addWidget(settings_button, alignment=Qt.AlignTop | Qt.AlignRight)
+    def setup_ui_elements(self):
+        # Connect buttons to functions
+        self.credits.clicked.connect(self.show_credits)
+        self.music.clicked.connect(self.show_music)
+        self.twentytimer.clicked.connect(self.open_twenty_timer)
+        self.studyfocus.clicked.connect(self.open_study_focus)
+        self.taskbuddy.clicked.connect(self.open_task_buddy)
+        self.settings.clicked.connect(self.open_settings)
+        self.minimizetray.clicked.connect(self.minimize_to_tray)
+        self.forceclose.clicked.connect(self.force_close)
 
-        self.setWindowTitle("The StudyClock")
-        self.setGeometry(int((screen_rect.width() - initial_width) / 2), int((screen_rect.height() - initial_height) / 2), int(initial_width), int(initial_height))
-        self.setWindowFlags(Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
-        self.setWindowState(Qt.WindowMaximized)
-        self.setFixedSize(self.size())
+        # Setup tray icon
+        self.create_system_tray_icon()
 
-        icon_path = "resources/logo.jpg"
-        self.setCentralWidget(central_widget)
-        self.setWindowIcon(QIcon(icon_path))
+    def show_credits(self):
+        # Implement your Credits functionality here
+        pass
+
+    def show_music(self):
+        # Implement your Music functionality here
+        pass
+
+    def open_twenty_timer(self):
+        # Implement your 20-20-20 Timer functionality here
+        pass
+
+    def open_study_focus(self):
+        # Implement your Study Focus functionality here
+        pass
+
+    def open_task_buddy(self):
+        # Implement your Task Buddy functionality here
+        pass
 
     def open_settings(self):
-        # Add your settings logic here
-        print("Opening settings...")
+        # Implement your Settings functionality here
+        pass
+
+    def minimize_to_tray(self):
+        self.hide()
+        self.tray_icon.show()
+
+    def force_close(self):
+        # Implement your Force Close functionality here
+        pass
+
+    def create_system_tray_icon(self):
+        menu = QMenu(self)
+        open_action = menu.addAction("Open")
+        open_action.triggered.connect(self.show)
+        exit_action = menu.addAction("Exit")
+        exit_action.triggered.connect(self.close_application)
+
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("resources/logo.jpg"))
+        self.tray_icon.setContextMenu(menu)
+        self.tray_icon.show()
+
+    def close_application(self):
+        self.tray_icon.hide()
+        sys.exit()
+
+    def closeEvent(self, event: QCloseEvent):
+        event.accept()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MyWindow()
-    window.show()
+    main_window = MainWindow()
+    main_window.show()
     sys.exit(app.exec_())
