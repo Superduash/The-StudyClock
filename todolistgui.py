@@ -8,6 +8,7 @@ from PyQt5.QtCore import QTimer, QDateTime
 db_manager = None
 trash_bin = []
 
+
 def create_database():
     global db_manager
     conn = sqlite3.connect('task_buddy.db')
@@ -27,6 +28,7 @@ def create_database():
 
     db_manager = DatabaseManager()
 
+
 def send_notification():
     records = db_manager.fetch_all_tasks()
     if records:
@@ -39,6 +41,7 @@ def send_notification():
             timeout=10,
         )
         QtGui.QSound("resources/notify.wav").play()
+
 
 class DatabaseManager:
     def __init__(self):
@@ -101,6 +104,7 @@ class DatabaseManager:
 
         self.conn.commit()
 
+
 class SystemTrayIcon(QSystemTrayIcon):
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
@@ -108,9 +112,11 @@ class SystemTrayIcon(QSystemTrayIcon):
         menu = QMenu(parent)
         restore_action = menu.addAction("Restore")
         minimize_action = menu.addAction("Minimize")
+        settings_action = menu.addAction("Settings")
         exit_action = menu.addAction("Exit")
         restore_action.triggered.connect(self.restore_app)
         minimize_action.triggered.connect(self.minimize_app)
+        settings_action.triggered.connect(self.show_settings_dialog)
         exit_action.triggered.connect(self.exit_app)
         self.setContextMenu(menu)
 
@@ -121,8 +127,30 @@ class SystemTrayIcon(QSystemTrayIcon):
     def minimize_app(self):
         window.hide()
 
+    def show_settings_dialog(self):
+        settings_dialog = SettingsDialog()
+        settings_dialog.exec_()
+
     def exit_app(self):
         app.quit()
+
+
+class SettingsDialog(QDialog):
+    def __init__(self, parent=None):
+        super(SettingsDialog, self).__init__(parent)
+        uic.loadUi("ui/settings.ui", self)
+
+        # Connect buttons to functions
+        self.save.clicked.connect(self.save_settings)
+        self.cancel.clicked.connect(self.close)
+
+    def save_settings(self):
+        due_datetime = self.setdate.dateTime().toPyDateTime()
+        # Save the due datetime to the database or perform any other necessary actions
+        # For now, let's print it
+        print("Due Date and Time:", due_datetime)
+        self.close()
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -135,7 +163,12 @@ class Ui_MainWindow(object):
         self.Create_task.clicked.connect(self.add_task)
         self.Completed.clicked.connect(self.open_completed_tasks)
         self.refresh_2.clicked.connect(self.refresh_ongoing_tasks)
+        self.info.clicked.connect(self.show_settings_dialog)
         self.graball()
+
+    def show_settings_dialog(self):
+        settings_dialog = SettingsDialog()
+        settings_dialog.exec_()
 
     def open_completed_tasks(self):
         self.completedwindow = QMainWindow()
@@ -263,6 +296,7 @@ class Ui_MainWindow(object):
     def refresh_ongoing_tasks(self):
         self.graball()
 
+
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -288,6 +322,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     def schedule_notifications(self):
         notification_interval = 5 * 60 * 60
         QTimer.singleShot(notification_interval * 1000, send_notification)
+
 
 if __name__ == "__main__":
     create_database()
