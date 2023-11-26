@@ -163,7 +163,7 @@ class Ui_MainWindow(object):
         self.Create_task.clicked.connect(self.add_task)
         self.Completed.clicked.connect(self.open_completed_tasks)
         self.refresh_2.clicked.connect(self.refresh_ongoing_tasks)
-        self.info.clicked.connect(self.show_settings_dialog)
+        self.infow.clicked.connect(self.show_settings_dialog)
         self.graball()
 
     def show_settings_dialog(self):
