@@ -15,7 +15,8 @@ def create_database():
     c = conn.cursor()
     c.execute("""CREATE TABLE if not exists todo_list(
         list_item text,
-        row_id int
+        row_id int,
+        due_datetime text
         )""")
     c.execute("""CREATE TABLE if not exists completed_tasks(
         task text,
@@ -63,15 +64,16 @@ class DatabaseManager:
         self.c.execute('SELECT * FROM completed_tasks')
         return self.c.fetchall()
 
-    def add_task(self, task_text):
+    def add_task(self, task_text, due_datetime=None):
         self.conn = sqlite3.connect('task_buddy.db')
         self.c = self.conn.cursor()
         self.c.execute('SELECT MAX(row_id) FROM todo_list')
         row_count = self.c.fetchone()[0] or 0
-        data_to_insert = [(task_text, row_count + 1)]
-        insert_query = "INSERT INTO todo_list (list_item, row_id) VALUES (?, ?)"
+        data_to_insert = [(task_text, row_count + 1, due_datetime)]
+        insert_query = "INSERT INTO todo_list (list_item, row_id, due_datetime) VALUES (?, ?, ?)"
         self.c.executemany(insert_query, data_to_insert)
         self.conn.commit()
+
 
     def add_completed_task(self, task_text, date_of_completion, time_of_completion, row_id):
         data_to_insert = [(task_text, date_of_completion, time_of_completion, row_id)]
@@ -112,11 +114,9 @@ class SystemTrayIcon(QSystemTrayIcon):
         menu = QMenu(parent)
         restore_action = menu.addAction("Restore")
         minimize_action = menu.addAction("Minimize")
-        settings_action = menu.addAction("Settings")
         exit_action = menu.addAction("Exit")
         restore_action.triggered.connect(self.restore_app)
         minimize_action.triggered.connect(self.minimize_app)
-        settings_action.triggered.connect(self.show_settings_dialog)
         exit_action.triggered.connect(self.exit_app)
         self.setContextMenu(menu)
 
@@ -138,7 +138,7 @@ class SystemTrayIcon(QSystemTrayIcon):
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
         super(SettingsDialog, self).__init__(parent)
-        uic.loadUi("ui/settings.ui", self)
+        uic.loadUi("ui/taskinfo.ui", self)
 
         # Connect buttons to functions
         self.save.clicked.connect(self.save_settings)
@@ -163,7 +163,7 @@ class Ui_MainWindow(object):
         self.Create_task.clicked.connect(self.add_task)
         self.Completed.clicked.connect(self.open_completed_tasks)
         self.refresh_2.clicked.connect(self.refresh_ongoing_tasks)
-        self.infow.clicked.connect(self.show_settings_dialog)
+        self.info.clicked.connect(self.show_settings_dialog)
         self.graball()
 
     def show_settings_dialog(self):
@@ -265,17 +265,20 @@ class Ui_MainWindow(object):
 
     def add_task(self):
         task_text = self.task_input.text()
+        due_datetime = None  # You can replace this with the actual due datetime
 
         if task_text:
-            db_manager.add_task(task_text)
+            db_manager.add_task(task_text, due_datetime)
             item = QListWidgetItem()
             checkbox_item = QCheckBox(task_text)
             checkbox_item.clicked.connect(lambda _, checkbox_item=checkbox_item: self.checkbox_clicked(checkbox_item))
-            checkbox_item.row_id = db_manager.fetch_all_tasks()[-1][1]
+            tasks = db_manager.fetch_all_tasks()
+            checkbox_item.row_id = tasks[-1][1] if tasks else 1
             item.setSizeHint(checkbox_item.sizeHint())
             self.task_list.addItem(item)
             self.task_list.setItemWidget(item, checkbox_item)
             self.task_input.clear()
+
 
     def delete_task(self):
         clicked_item = self.task_list.currentItem()

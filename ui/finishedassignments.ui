@@ -185,7 +185,7 @@ QScrollBar::sub-line:vertical {
       </column>
       <column>
        <property name="text">
-        <string>Time Of Completion</string>
+        <string>Date Of Completion</string>
        </property>
        <property name="font">
         <font>
@@ -201,7 +201,7 @@ QScrollBar::sub-line:vertical {
       </column>
       <column>
        <property name="text">
-        <string>Date Of Completition</string>
+        <string>Time Of Completition</string>
        </property>
        <property name="font">
         <font>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>991</width>
-    <height>543</height>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -174,7 +174,7 @@ QPushButton:hover {
 }</string>
          </property>
          <property name="text">
-          <string>  Task Settings</string>
+          <string>  Task Info</string>
          </property>
          <property name="icon">
           <iconset>
@@ -299,8 +299,19 @@ QPushButton:hover {
        </item>
        <item>
         <widget class="QListWidget" name="task_list">
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
          <property name="styleSheet">
           <string notr="true"/>
+         </property>
+         <property name="lineWidth">
+          <number>1</number>
          </property>
          <property name="viewMode">
           <enum>QListView::ListMode</enum>

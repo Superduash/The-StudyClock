@@ -173,7 +173,7 @@ class TimerApp(QMainWindow):
             notification.notify(
                 title="20-20-20 Rule Reminder",
                 message="Look Away From The Screen For 20 Seconds",
-                timeout=5,
+                timeout=10,
             )
             self.delay_timer.start(25 * 1000)
             self.notification_shown = True
