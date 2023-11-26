@@ -9,7 +9,6 @@ from PyQt5.QtMultimedia import QSoundEffect
 db_manager = None
 trash_bin = []
 
-
 def create_database():
     global db_manager
     conn = sqlite3.connect('task_buddy.db')
@@ -328,9 +327,9 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.fade_in_animation.start()
 
     def schedule_notifications(self):
-        notification_interval = 60
+        notification_interval = 5 * 60 * 60
         QTimer.singleShot(notification_interval * 1000, self.send_notification_and_reschedule)
-        QTimer.singleShot(5 * 60 * 60 * 1000, self.schedule_notifications)
+        QTimer.singleShot(notification_interval * 1000, self.schedule_notifications)
 
     def send_notification_and_reschedule(self):
         self.send_notification()
