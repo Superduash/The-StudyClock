@@ -282,7 +282,7 @@ QPushButton:hover {
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QLabel" name="timer">
+      <widget class="QLabel" name="timer_label">
        <property name="geometry">
         <rect>
          <x>80</x>
