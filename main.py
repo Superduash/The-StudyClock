@@ -1,27 +1,25 @@
 import sys
+import subprocess
+import psutil
+import threading
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-
+from PyQt5.QtMultimedia import QSoundEffect
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-
-        # Load UI from main.ui
         self.load_ui()
-
-        # Setup UI elements
         self.setup_ui_elements()
+        self.sound_effect = QSoundEffect(self)
+        self.sound_effect.setSource(QUrl.fromLocalFile("resources/click.wav"))
 
     def load_ui(self):
         from PyQt5 import uic
-
-        # Load the UI file
         uic.loadUi('ui/main.ui', self)
 
     def setup_ui_elements(self):
-        # Connect buttons to functions
         self.credits.clicked.connect(self.show_credits)
         self.music.clicked.connect(self.show_music)
         self.twentytimer.clicked.connect(self.open_twenty_timer)
@@ -29,42 +27,58 @@ class MainWindow(QMainWindow):
         self.taskbuddy.clicked.connect(self.open_task_buddy)
         self.settings.clicked.connect(self.open_settings)
         self.minimizetray.clicked.connect(self.minimize_to_tray)
-        self.forceclose.clicked.connect(self.force_close)
-
-        # Setup tray icon
+        self.forceclose.clicked.connect(self.force_close_all)
         self.create_system_tray_icon()
 
+    def play_click_sound(self):
+        self.sound_effect.play()
+
     def show_credits(self):
+        self.play_click_sound()
         # Implement your Credits functionality here
-        pass
 
     def show_music(self):
+        self.play_click_sound()
         # Implement your Music functionality here
-        pass
 
     def open_twenty_timer(self):
-        # Implement your 20-20-20 Timer functionality here
-        pass
+        self.play_click_sound()
+        subprocess_thread = threading.Thread(target=self.run_subprocess, args=(["python", "202020.py"],))
+        subprocess_thread.start()
+
+    def run_subprocess(self, command):
+        subprocess.run(command)
 
     def open_study_focus(self):
+        self.play_click_sound()
         # Implement your Study Focus functionality here
-        pass
 
     def open_task_buddy(self):
+        self.play_click_sound()
         # Implement your Task Buddy functionality here
-        pass
 
     def open_settings(self):
+        self.play_click_sound()
         # Implement your Settings functionality here
-        pass
 
     def minimize_to_tray(self):
+        self.play_click_sound()
         self.hide()
         self.tray_icon.show()
 
-    def force_close(self):
-        # Implement your Force Close functionality here
-        pass
+    def force_close_all(self):
+        self.play_click_sound()
+        for proc in psutil.process_iter(['pid', 'name']):
+            if "python" in proc.info['name']:
+                try:
+                    process = psutil.Process(proc.info['pid'])
+                    process.terminate()
+                    process.wait(timeout=2)
+                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                    pass
+
+        sys.exit()
+
 
     def create_system_tray_icon(self):
         menu = QMenu(self)
