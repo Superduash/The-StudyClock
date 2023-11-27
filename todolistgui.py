@@ -251,9 +251,7 @@ class Ui_MainWindow(object):
                 item.setSizeHint(checkbox_item.sizeHint())
                 self.task_list.addItem(item)
                 self.task_list.setItemWidget(item, checkbox_item)
-
-                # Set a minimum width for each item (adjust the value as needed)
-                item.setSizeHint(QSize(item.sizeHint().width(), 35))  # Set the width to 50 (adjust as needed)
+                item.setSizeHint(QSize(item.sizeHint().width(), 35))
 
     def add_task(self):
         try:

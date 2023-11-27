@@ -1,0 +1,9 @@
+Install these modules through Command Prompt : -
+pip install PyQt5
+pip install plyer
+pip install sqlite3
+pip install pygame
+
+You can put any of your favourite music with file format - ".mp3" in the "music" folder  ^_^
+
+E N J O Y!!

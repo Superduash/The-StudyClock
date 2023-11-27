@@ -192,7 +192,7 @@ class TimerApp(QMainWindow):
         exit_action.triggered.connect(self.close_application)
 
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon("resources/logo.jpg"))
+        self.tray_icon.setIcon(QIcon("resources/studyclock.png"))
         self.tray_icon.setContextMenu(menu)
         self.tray_icon.show()
 

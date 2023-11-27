@@ -1,4 +1,0 @@
-pip install PyQt5
-pip install plyer
-pip install sqlite3
-pip install psutil
