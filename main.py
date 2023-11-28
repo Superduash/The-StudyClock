@@ -163,8 +163,11 @@ class MainWindow(QMainWindow):
         try:
             if not self.music_player.playing:
                 self.music_player.play_random_music()
+            else:
+                self.music_player.play_next_music()  # Switch to the next song without stopping
         except Exception as e:
             print("Error", f"An error occurred: {str(e)}")
+
 
     def pause_play(self):
         # Pause or unpause the music when the "Pause/Play" button is clicked
