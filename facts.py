@@ -1,3 +1,4 @@
+#List containing around 180 facts which will be displayed randomly in the Random Fact Label in main window(homescreen)
 study_facts = [
     "Reading before sleep improves memory and brain function.",
     "Regular breaks during study sessions enhance concentration and overall productivity.",
@@ -181,8 +182,3 @@ study_facts = [
     "Creating a dedicated study space minimizes distractions and enhances focus.",
     "Practicing active recall through self-quizzing strengthens memory"
     ]
-
-# Save to a file
-with open("facts.txt", "w") as file:
-    for fact in study_facts:
-        file.write(fact + "\n")

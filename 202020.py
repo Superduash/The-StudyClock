@@ -15,57 +15,67 @@ class OutlinedLabel(QLabel):
         self.outline_size = 10
 
     def paintEvent(self, event):
+        # Override the paint event to customize the appearance of the label text
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setRenderHint(QPainter.TextAntialiasing)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
-
+        # Set up the outline pen
         pen = QPen(QColor(self.outline_color))
         pen.setWidth(self.outline_size)
         painter.setPen(pen)
-
+         # Draw the outlined text
         for i in range(-self.outline_size, self.outline_size + 1):
             for j in range(-self.outline_size, self.outline_size + 1):
                 if i**2 + j**2 <= self.outline_size**2:
                     painter.drawText(event.rect().adjusted(i, j, 0, 0), self.alignment(), self.text())
-
+        # Set up the text color and draw the text
         painter.setPen(QColor(self.text_color))
         painter.drawText(event.rect(), self.alignment(), self.text())
 
 class TimerApp(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        # Fade-in animation setup
         self.fade_in_animation = QtCore.QPropertyAnimation(self, b"windowOpacity")
         self.fade_in_animation.setStartValue(0)
         self.fade_in_animation.setEndValue(1)
         self.fade_in_animation.setDuration(500)
         self.fade_in_animation.start()
 
+        # Set up window properties
         desktop = QDesktopWidget()
         screen_rect = desktop.availableGeometry()
         initial_width = screen_rect.width() * 1
         initial_height = screen_rect.height() * 0.966
-
         self.setGeometry(int((screen_rect.width() - initial_width) / 2), int((screen_rect.height() - initial_height) / 2), int(initial_width), int(initial_height))
         self.setWindowFlags(Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowState(Qt.WindowMaximized)
         self.setFixedSize(self.size())
-
         self.setWindowTitle("20-20-20 Rule Timer")
 
+        # Set up window icon
         icon_path = "resources/20-20-20.jpg"
         self.setWindowIcon(QIcon(icon_path))
 
+        # Set up UI elements
         self.timer_label = OutlinedLabel(self)
         self.timer_label.setAlignment(Qt.AlignCenter)
         self.timer_label.setText("20:00")
         self.timer_label.setStyleSheet("font-family: 'Segoe UI'; color: #ffffff; font-size: 140px;")
 
+        # Set up buttons and layout
         self.start_button = QPushButton("Start Timer", self)
         self.reset_button = QPushButton("Reset Timer", self)
         self.pause_resume_button = QPushButton("Pause/Resume Timer", self)
         self.minimize_button = QPushButton("Minimize", self)
+        self.setup_buttons()
+        self.setup_layout()
+        self.setup_timer()
 
+    def setup_buttons(self):
+        # Set up button properties and connect signals
         button_width = 380
         button_height = 120
         font_size = 30
@@ -81,6 +91,8 @@ class TimerApp(QMainWindow):
 
             button.clicked.connect(self.play_click_sound)
 
+    def setup_layout(self):
+        # Set up the main layout
         layout = QVBoxLayout()
         layout.addWidget(self.timer_label)
 
@@ -94,6 +106,9 @@ class TimerApp(QMainWindow):
         central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center; background-size: cover;")
 
         self.setCentralWidget(central_widget)
+
+    def setup_timer(self):
+        # Set up the app, the timer and related buttons and variables
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_timer)
         self.start_button.clicked.connect(self.start_timer)
@@ -154,6 +169,7 @@ class TimerApp(QMainWindow):
         self.create_system_tray_icon()
 
     def update_timer(self):
+        # Update the timer display
         if self.start_time and not self.paused:
             elapsed_time = self.elapsed_time + (datetime.now() - self.start_time).total_seconds()
             remaining_time = self.timer_duration.total_seconds() - elapsed_time
@@ -166,6 +182,7 @@ class TimerApp(QMainWindow):
                 self.timer_label.setText(formatted_time)
 
     def restart_timer(self):
+        # Restart the timer after a delay
         self.timer.stop()
         self.elapsed_time = 0
         self.timer_label.setText("20:00")
@@ -174,6 +191,7 @@ class TimerApp(QMainWindow):
         self.delay_timer.stop()
 
     def show_notification(self):
+        # Show a notification when the timer reaches 0
         if not self.notification_shown:
             self.play_sound(self.notify_sound)
             notification.notify(
@@ -181,6 +199,7 @@ class TimerApp(QMainWindow):
                 message="Look Away From The Screen For 20 Seconds",
                 timeout=10,
             )
+            #to wait for 20 seconds and to start the timer again
             self.delay_timer.start(25 * 1000)
             self.notification_shown = True
 
@@ -204,6 +223,7 @@ class TimerApp(QMainWindow):
         event.accept()
 
 if __name__ == "__main__":
+    # Create the application instance and show the main window
     app = QApplication(sys.argv)
     timer_app = TimerApp()
     timer_app.setWindowOpacity(0)
