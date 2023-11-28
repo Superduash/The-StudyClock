@@ -1,7 +1,14 @@
+#A.Ashwin, 12B
+#7205
+#COMPUTER SCIENCE PROJECT
+
+print("**  CLASS 12 VME PROJECT  **")
+print ('\n------The Study Clock------')
+
 #importing required modules
-import sys, os, subprocess, random
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QSlider, QLabel, QPushButton, QDialog
-from PyQt5.QtCore import Qt, QUrl, QProcess, QPropertyAnimation
+import sys, os, subprocess, random, wave
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QSlider, QLabel, QPushButton, QFileDialog
+from PyQt5.QtCore import Qt, QUrl, QProcess, QPropertyAnimation, QTimer
 from PyQt5.QtMultimedia import QSoundEffect
 from PyQt5 import uic
 #removing pygame welcome text
@@ -14,43 +21,61 @@ class MusicPlayer:
         # Initialize the Pygame mixer for playing music and set default volume to 100
         pygame.mixer.init()
         self.set_volume(100)
-        # List all music files in the "music" folder with ".mp3" extension
+        # List all music files in the "music" folder with ".wav" extension
         self.music_folder = "music"
-        self.music_files = [f for f in os.listdir(self.music_folder) if f.endswith(".mp3")]
+        self.music_files = [f for f in os.listdir(self.music_folder) if f.endswith(".wav")]
         self.current_media_index = -1
+        self.playing = False
+
+        pygame.mixer.music.set_endevent(pygame.USEREVENT)
 
     def play_random_music(self):
         if not self.music_files:
-            QMessageBox.warning(None, "Error", "No music files found.")
             return
-
-        # Generate a random index for a music file
+         # Generate a random index for a music file
         new_index = random.randint(0, len(self.music_files) - 1)
         while new_index == self.current_media_index:
-            new_index = random.randint(0, len(self.music_files) - 1) # Ensure the new index is different from the current one
-        self.current_media_index = new_index # Update the current media index
+            new_index = random.randint(0, len(self.music_files) - 1)
+        self.current_media_index = new_index
+
         selected_music = self.music_files[new_index]
-        music_path = os.path.join(self.music_folder, selected_music) # Get the selected music file
+        music_path = os.path.join(self.music_folder, selected_music)
 
         try:
             # Load and play the selected music file
             pygame.mixer.music.load(music_path)
             pygame.mixer.music.play()
+            self.playing = True
             title = selected_music
             print(f"Now playing: {title}")
+
+            # Get the duration of the current song
+            with wave.open(music_path, 'rb') as wav_file:
+                duration = wav_file.getnframes() / float(wav_file.getframerate())
+
+            # Start a timer to play the next song after the duration of the current song
+            QTimer.singleShot(int(duration * 1000), self.play_next_music)
         except Exception as e:
             print("Error", f"An error occurred: {str(e)}")
+
+    def play_next_music(self):
+        # Play the next song when the current one finishes
+        if self.playing:
+            self.play_random_music()
 
     def set_volume(self, volume):
         pygame.mixer.music.set_volume(volume)
 
     def stop_music(self):
         pygame.mixer.music.stop()
+        self.playing = False
+
 
 class CreditsDialog(QDialog):
     def __init__(self, parent=None):
         super(CreditsDialog, self).__init__(parent)
         uic.loadUi('ui/credits.ui', self)
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -84,7 +109,7 @@ class MainWindow(QMainWindow):
         self.setWindowFlag(Qt.WindowCloseButtonHint, False)
         self.setFixedSize(self.size())
 
-        # Set up the volume slider
+        # Connect buttons to their respective functions and set flags
         self.volume_slider = self.findChild(QSlider, "volume")
         if self.volume_slider:
             self.volume_slider.setValue(100)
@@ -105,17 +130,14 @@ class MainWindow(QMainWindow):
             self.display_random_fact()
 
     def reload_fact(self):
-        # Reload and display another random fact
         self.play_click_sound()
         self.display_random_fact()
 
     def display_random_fact(self):
-        # Display a random fact in the "facts" label
         random_fact = self.get_random_fact()
         self.fact_label.setText(random_fact)
 
     def get_random_fact(self):
-        # Load study facts from the external module and choose a random one
         from facts import study_facts
         return random.choice(study_facts)
 
@@ -132,16 +154,15 @@ class MainWindow(QMainWindow):
         self.sound_effect.play()
 
     def show_credits(self):
-        # Show the credits dialog when the "Credits" button is clicked
         self.play_click_sound()
         credits_dialog = CreditsDialog(self)
         credits_dialog.exec_()
 
     def toggle_music(self):
-        # Toggle the music play/pause state when the "Music" button is clicked
         self.play_click_sound()
         try:
-            self.music_player.play_random_music()
+            if not self.music_player.playing:
+                self.music_player.play_random_music()
         except Exception as e:
             print("Error", f"An error occurred: {str(e)}")
 
@@ -154,9 +175,12 @@ class MainWindow(QMainWindow):
             print("Error", f"An error occurred: {str(e)}")
 
     def adjust_volume(self, value):
-        # Adjust the volume of the music playback
         volume = value / 100.0
         self.music_player.set_volume(volume)
+        try:
+            pygame.mixer.music.set_volume(volume)
+        except Exception as e:
+            print("Error", f"An error occurred: {str(e)}")
 
     def open_subprocess(self, key, command):
         # Open a subprocess when a corresponding button is clicked
@@ -175,7 +199,6 @@ class MainWindow(QMainWindow):
         sys.exit()
 
     def closeEvent(self, event):
-        # Handle the close event of the main window
         if self.force_close_triggered:
             for _, subprocess_instance in self.subprocesses.items():
                 if subprocess_instance and subprocess_instance.poll() is None:
@@ -184,6 +207,7 @@ class MainWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
 
 if __name__ == "__main__":
     # Create the application instance and show the main window

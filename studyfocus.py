@@ -40,6 +40,7 @@ class Ui_MainWindow(object):
         self.selected_break_time = self.length_of_break1.time()
         self.break_time_in_seconds = (-1) * self.selected_break_time.secsTo(QTime(0, 0))
         self.formatted_break_time = self.selected_break_time.toString("hh:mm:ss")
+        self.customwindow.close()
 
 # Main window class that inherits from QMainWindow and the UI class
 class MyMainWindow(QMainWindow, Ui_MainWindow):
