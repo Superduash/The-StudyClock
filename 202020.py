@@ -103,7 +103,7 @@ class TimerApp(QMainWindow):
 
         central_widget = QWidget(self)
         central_widget.setLayout(layout)
-        central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center; background-size: cover;")
+        central_widget.setStyleSheet("background-image: url(resources/bg.jpg); background-repeat: no-repeat; background-position: center")
 
         self.setCentralWidget(central_widget)
 

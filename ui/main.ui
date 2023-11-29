@@ -150,38 +150,6 @@ QPushButton:hover {
        </size>
       </property>
      </widget>
-     <widget class="QLabel" name="menu">
-      <property name="geometry">
-       <rect>
-        <x>70</x>
-        <y>16</y>
-        <width>191</width>
-        <height>71</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Trebuchet MS</family>
-        <pointsize>-1</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel {
-    color: white;
-    font-family: &quot;Trebuchet MS&quot;;
-    font-size: 36px;
-    font-weight: bold;
-    border: 2px solid black; 
-    border-radius: 5px;
-}
-</string>
-      </property>
-      <property name="text">
-       <string>      Menu</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="menuicon">
       <property name="geometry">
        <rect>
@@ -239,6 +207,36 @@ QPushButton:hover {
         <width>55</width>
         <height>60</height>
        </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>18</y>
+        <width>171</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>22</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+    color: white;
+    font-family: &quot;Trebuchet MS&quot;;
+    border: 2px solid black; 
+    border-radius: 5px;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>     Menu</string>
       </property>
      </widget>
     </widget>
